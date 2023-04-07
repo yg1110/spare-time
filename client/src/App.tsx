@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button } from '@mui/material'
+import './assets/styles/globals.css'
+import Index from './component/Calendar'
 
 function App() {
-  return <Button variant="text">Text</Button>
+  return <Index />
 }
 
 export default App

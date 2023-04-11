@@ -64,7 +64,7 @@ const Index: React.FC = () => {
     })
   }
 
-  const handleModalClose = () => {
+  const handleModalClose = (e: React.MouseEvent<HTMLElement>) => {
     setShowModal(false)
   }
 

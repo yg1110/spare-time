@@ -27,7 +27,7 @@ const Title = styled.h1`
 interface Props {
   selectedDate: CALENDAR_DATE
   showModal: boolean
-  closeEvent: () => void
+  closeEvent: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 const CalendarModal: React.FC<Props> = ({

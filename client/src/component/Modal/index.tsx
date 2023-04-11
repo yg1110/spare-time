@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 import closeButton from '../../assets/images/close.png'
 import { ModalProps } from '../../common/type/Modal'
@@ -38,9 +38,13 @@ const Image = styled.img`
 
 export default function Modal(props: ModalProps) {
   const { visible, close, children } = props
+  const overlayRef = useRef(null)
+  const stopPropagation = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+  }
   return visible ? (
-    <Overlay onClick={close}>
-      <Container>
+    <Overlay id="overlay" onClick={close} ref={overlayRef}>
+      <Container onClick={stopPropagation}>
         {children}
         <Image onClick={close} src={closeButton} alt={'close-button'} />
       </Container>

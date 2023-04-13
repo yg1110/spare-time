@@ -16,13 +16,12 @@ const Overlay = styled.div`
   justify-content: center;
 `
 
-const Container = styled.div`
+const Container = styled.div<{ width: number }>`
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  width: 500px;
-  height: 500px;
+  width: ${(props) => `${props.width}px`};
   background-color: white;
   border-radius: 6px;
 `
@@ -36,15 +35,15 @@ const Image = styled.img`
   cursor: pointer;
 `
 
-export default function Modal(props: ModalProps) {
+export default function Modal(props: ModalProps): JSX.Element | null {
   const { visible, close, children } = props
   const overlayRef = useRef(null)
-  const stopPropagation = (event: React.MouseEvent<HTMLElement>) => {
+  const stopPropagation = (event: React.MouseEvent<HTMLElement>): void => {
     event.stopPropagation()
   }
   return visible ? (
-    <Overlay id="overlay" onClick={close} ref={overlayRef}>
-      <Container onClick={stopPropagation}>
+    <Overlay onClick={close} ref={overlayRef}>
+      <Container onClick={stopPropagation} width={props.width}>
         {children}
         <Image onClick={close} src={closeButton} alt={'close-button'} />
       </Container>

@@ -7,6 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import CalendarModal from '../Modal/CalendarModal'
 import { LANG } from '../../common/utils/Constant'
 import { CALENDAR_DATE } from '../../common/type/Calendar'
+import DayView from '../Day'
 
 const Container = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const Index: React.FC = () => {
         selectable={true}
         dateClick={handleDateSelect}
       />
+      <DayView />
       <CalendarModal
         showModal={showModal}
         selectedDate={selectedDate}

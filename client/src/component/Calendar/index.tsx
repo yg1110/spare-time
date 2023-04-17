@@ -32,7 +32,7 @@ const CalendarView: React.FC = () => {
     })
   }
 
-  const handleModalClose = (e: React.MouseEvent<HTMLElement>) => {
+  const handleModalClose = () => {
     setShowModal(false)
   }
 

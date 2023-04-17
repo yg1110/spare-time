@@ -8,4 +8,5 @@ export interface DATE {
 export interface TIME {
   startTime: Dayjs
   endTime: Dayjs
+  category: string
 }

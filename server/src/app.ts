@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import mongoose, { ConnectOptions } from 'mongoose'
 import { initRoutesTodo } from './routes/todo'
+import { initRoutesTime } from './routes/time'
 
 class App {
   private app: Express
@@ -13,6 +14,7 @@ class App {
     this.config()
     this.routes()
     initRoutesTodo(this.app)
+    initRoutesTime(this.app)
     this.connectDB()
   }
 
@@ -36,7 +38,7 @@ class App {
   }
 
   private async connectDB(): Promise<void> {
-    const mongoUrl = 'mongodb://localhost:27017/todos'
+    const mongoUrl = 'mongodb://localhost:27017/calendar'
     try {
       await mongoose.connect(mongoUrl, {
         useNewUrlParser: true,

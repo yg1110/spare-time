@@ -7,6 +7,7 @@ import Modal from './index'
 import { LANG } from '../../utils/Constant'
 import { isValidDate } from '../../utils/helper'
 import { DATE, TIME } from '../../models/Calendar'
+import { postTime } from '../../services/time.service'
 
 const Container = styled.div`
   width: 100%;
@@ -65,7 +66,7 @@ const Input = styled.input`
 interface Props {
   selectedDate: DATE
   showModal: boolean
-  closeEvent: (e: React.MouseEvent<HTMLElement>) => void
+  closeEvent: () => void
 }
 
 const CalendarModal: React.FC<Props> = ({
@@ -73,10 +74,10 @@ const CalendarModal: React.FC<Props> = ({
   showModal,
   closeEvent,
 }) => {
-  const [category, setCategory] = React.useState<string>('')
   const [time, setTime] = React.useState<TIME>({
     startTime: dayjs().startOf('day'),
     endTime: dayjs(),
+    category: '',
   })
 
   useEffect(() => {
@@ -85,13 +86,14 @@ const CalendarModal: React.FC<Props> = ({
       const startDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
       const endDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
       setTime({
+        ...time,
         startTime: dayjs(startDate + nowTime).startOf('day'),
         endTime: dayjs(endDate + nowTime),
       })
     }
   }, [selectedDate])
 
-  function handleSubmitSpareTime(): void {
+  async function handleSubmitSpareTime(): Promise<void> {
     const isValidStartDate = isValidDate(time.startTime)
     const isValidEndDate = isValidDate(time.endTime)
     if (!isValidStartDate) {
@@ -103,11 +105,17 @@ const CalendarModal: React.FC<Props> = ({
       return
     }
     const submitTime = {
-      category: category,
+      category: time.category,
       startTime: dayjs(time.startTime).format('YYYY-MM-DD hh:mm:ss'),
       endTIme: dayjs(time.endTime).format('YYYY-MM-DD hh:mm:ss'),
+    } as unknown as TIME
+    const res = await postTime(submitTime)
+    if (res) {
+      closeEvent()
+      alert('Time Registration Success')
+    } else {
+      alert(res)
     }
-    console.log(`submitTime`, submitTime)
   }
 
   function onChangeTime(name: string, selectTime: Dayjs | null) {
@@ -120,8 +128,11 @@ const CalendarModal: React.FC<Props> = ({
   }
 
   function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target
-    setCategory(value)
+    const { name, value } = event.target
+    setTime({
+      ...time,
+      [name]: value,
+    })
   }
 
   return (
@@ -134,7 +145,7 @@ const CalendarModal: React.FC<Props> = ({
               <TimeLabel>카테고리</TimeLabel>
               <Input
                 name="category"
-                value={category}
+                value={time.category}
                 onChange={onChangeValue}
               />
             </TimeWrapper>

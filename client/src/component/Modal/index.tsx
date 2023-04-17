@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import closeButton from '../../assets/images/close.png'
-import { ModalProps } from '../../models/Modal'
 
 const Overlay = styled.div`
   position: fixed;
@@ -34,6 +33,13 @@ const Image = styled.img`
   right: 30px;
   cursor: pointer;
 `
+
+interface ModalProps {
+  visible: boolean
+  children: any
+  width: number
+  close: (e: React.MouseEvent<HTMLElement>) => void
+}
 
 export default function Modal(props: ModalProps): JSX.Element | null {
   const { visible, close, children } = props

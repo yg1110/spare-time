@@ -1,11 +1,11 @@
 import { Dayjs } from 'dayjs'
 
-export interface CALENDAR_DATE {
+export interface DATE {
   title: string
   date: Date | undefined
 }
 
-export interface CALENDAR_TIME {
+export interface TIME {
   startTime: Dayjs
   endTime: Dayjs
 }

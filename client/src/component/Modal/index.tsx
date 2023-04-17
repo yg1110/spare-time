@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import closeButton from '../../assets/images/close.png'
-import { ModalProps } from '../../common/type/Modal'
+import { ModalProps } from '../../models/Modal'
 
 const Overlay = styled.div`
   position: fixed;

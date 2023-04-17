@@ -5,8 +5,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
 import CalendarModal from '../Modal/CalendarModal'
-import { LANG } from '../../common/utils/Constant'
-import { CALENDAR_DATE } from '../../common/type/Calendar'
+import { LANG } from '../../utils/Constant'
+import { DATE } from '../../models/Calendar'
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const Container = styled.div`
 
 const CalendarView: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<CALENDAR_DATE>({
+  const [selectedDate, setSelectedDate] = useState<DATE>({
     title: '',
     date: undefined,
   })

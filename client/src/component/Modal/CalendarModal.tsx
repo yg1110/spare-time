@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import Modal from '../Modal'
 import dayjs, { Dayjs } from 'dayjs'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LANG } from '../../common/utils/Constant'
-import { CALENDAR_DATE, CALENDAR_TIME } from '../../common/type/Calendar'
-import { isValidDate } from '../../common/utils/helper'
+import Modal from './index'
+import { LANG } from '../../utils/Constant'
+import { isValidDate } from '../../utils/helper'
+import { DATE, TIME } from '../../models/Calendar'
 
 const Container = styled.div`
   width: 100%;
@@ -63,7 +63,7 @@ const Input = styled.input`
 `
 
 interface Props {
-  selectedDate: CALENDAR_DATE
+  selectedDate: DATE
   showModal: boolean
   closeEvent: (e: React.MouseEvent<HTMLElement>) => void
 }
@@ -74,7 +74,7 @@ const CalendarModal: React.FC<Props> = ({
   closeEvent,
 }) => {
   const [category, setCategory] = React.useState<string>('')
-  const [time, setTime] = React.useState<CALENDAR_TIME>({
+  const [time, setTime] = React.useState<TIME>({
     startTime: dayjs().startOf('day'),
     endTime: dayjs(),
   })

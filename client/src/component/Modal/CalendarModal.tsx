@@ -53,6 +53,15 @@ const SubmitButtonText = styled.p`
   font-weight: 600;
 `
 
+const Input = styled.input`
+  width: 260px;
+  height: 54px;
+  font-size: 18px;
+  padding: 16.5px 14px;
+  border-radius: 5px;
+  border: #ddd 1px solid;
+`
+
 interface Props {
   selectedDate: CALENDAR_DATE
   showModal: boolean
@@ -64,6 +73,7 @@ const CalendarModal: React.FC<Props> = ({
   showModal,
   closeEvent,
 }) => {
+  const [category, setCategory] = React.useState<string>('')
   const [time, setTime] = React.useState<CALENDAR_TIME>({
     startTime: dayjs().startOf('day'),
     endTime: dayjs(),
@@ -93,6 +103,7 @@ const CalendarModal: React.FC<Props> = ({
       return
     }
     const submitTime = {
+      category: category,
       startTime: dayjs(time.startTime).format('YYYY-MM-DD hh:mm:ss'),
       endTIme: dayjs(time.endTime).format('YYYY-MM-DD hh:mm:ss'),
     }
@@ -108,12 +119,25 @@ const CalendarModal: React.FC<Props> = ({
     }
   }
 
+  function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target
+    setCategory(value)
+  }
+
   return (
     <Modal visible={showModal} close={closeEvent} width={300}>
       <Container>
         <Title>{selectedDate.title}</Title>
         <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
           <RowContainer>
+            <TimeWrapper>
+              <TimeLabel>카테고리</TimeLabel>
+              <Input
+                name="category"
+                value={category}
+                onChange={onChangeValue}
+              />
+            </TimeWrapper>
             <TimeWrapper>
               <TimeLabel>시작 시간</TimeLabel>
               <TimePicker

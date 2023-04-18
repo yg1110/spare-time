@@ -82,7 +82,7 @@ const CalendarModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (selectedDate) {
-      const nowTime = dayjs(time.endTime).format('hh:mm:ss')
+      const nowTime = dayjs(time.endTime).format('HH:mm:ss')
       const startDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
       const endDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
       setTime({
@@ -106,8 +106,8 @@ const CalendarModal: React.FC<Props> = ({
     }
     const submitTime = {
       category: time.category,
-      startTime: dayjs(time.startTime).format('YYYY-MM-DD hh:mm:ss'),
-      endTIme: dayjs(time.endTime).format('YYYY-MM-DD hh:mm:ss'),
+      startTime: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
+      endTime: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
     } as unknown as TIME
     const res = await postTime(submitTime)
     if (res) {

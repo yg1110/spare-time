@@ -135,6 +135,13 @@ function App() {
     },
   ]
 
+  const title =
+    selectMenu === MENUS.MONTH
+      ? '스케쥴'
+      : selectMenu === MENUS.DAY
+      ? '집중시간 / 낭비시간'
+      : ''
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <CssBaseline />
@@ -153,7 +160,7 @@ function App() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Spare Time Calendar
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>

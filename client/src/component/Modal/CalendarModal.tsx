@@ -7,7 +7,7 @@ import Modal from './index'
 import { LANG } from '../../utils/Constant'
 import { isValidDate } from '../../utils/helper'
 import { DATE, TIME } from '../../models/Calendar'
-import { postTime } from '../../services/time.service'
+import { createTime } from '../../services/time.service'
 
 const Container = styled.div`
   width: 100%;
@@ -109,7 +109,7 @@ const CalendarModal: React.FC<Props> = ({
       startTime: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
       endTime: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
     } as unknown as TIME
-    const res = await postTime(submitTime)
+    const res = await createTime(submitTime)
     if (res) {
       closeEvent()
       alert('Time Registration Success')

@@ -71,6 +71,23 @@ export const initRoutesTime = (app: Application) => {
     }
   })
 
+  app.get('/api/time/:date', async (req: Request, res: Response) => {
+    const { date } = req.params
+    try {
+      const timeModel: ITime | null = await Time.findOne({
+        date: date,
+      }).exec()
+      if (!timeModel) {
+        res.status(200).json(Array.from({ length: 24 }).fill(0) as number[])
+      } else {
+        res.status(200).json(timeModel.hours)
+      }
+    } catch (error) {
+      console.error('Error getting todo by ID', error)
+      res.status(500).json({ error: 'Error getting todo by ID' })
+    }
+  })
+
   app.post('/api/time', async (req: Request, res: Response) => {
     const { category, startTime, endTime } = req.body
     const timeModel: ITime | null = await Time.findOne({

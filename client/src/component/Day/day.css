@@ -1,5 +1,9 @@
-.color-scale-0 {
+.color-scale-none {
     background: #ecedf0;
+}
+
+.color-scale-0 {
+    background: #eef5ce;
 }
 
 .color-scale-1 {
@@ -18,3 +22,6 @@
     background: #1e6823;
 }
 
+.color-scale-5 {
+    background: red;
+}

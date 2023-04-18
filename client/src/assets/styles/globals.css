@@ -3,3 +3,7 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+.MuiBox-root {
+    padding: 7px !important;
+}

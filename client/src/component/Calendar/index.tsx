@@ -6,9 +6,9 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
 import CalendarModal from '../Modal/CalendarModal'
 import dayjs from 'dayjs'
-import { LANG } from '../../utils/Constant'
+import { LANG } from '../../utils/constant'
 import { DATE } from '../../models/Calendar'
-import { DatesSetArg } from '@fullcalendar/core'
+import { DatesSetArg, EventClickArg } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
 import { selectedDateState } from '../../state/calendar.state'
 import './calendar.css'
@@ -48,14 +48,46 @@ const CalendarView: React.FC = () => {
     setShowModal(false)
   }
 
+  function handleEventClick(clickInfo: EventClickArg) {
+    console.log(`clickInfo`, clickInfo)
+
+    if (
+      confirm(
+        `Are you sure you want to delete the event '${clickInfo.event.title}'`
+      )
+    ) {
+      // eventStore.deleteEvent(clickInfo.event.id)
+    }
+  }
+
   return (
     <Container>
       <FullCalendar
         locale={LANG}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        datesSet={handleMonthChange}
-        dateClick={handleDateSelect}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+        }}
+        events={[
+          {
+            title: 'Event 1',
+            start: '2023-04-18T09:00:00',
+            end: '2023-04-18T11:00:00',
+          },
+          {
+            title: 'Event 2',
+            start: '2023-04-18T13:00:00',
+            end: '2023-04-18T15:00:00',
+          },
+        ]}
+        initialView="timeGridDay"
+        selectable={true}
+        dayMaxEvents={true}
+        // datesSet={handleMonthChange}
+        eventClick={handleEventClick}
+        // dateClick={handleDateSelect}
       />
       <CalendarModal
         showModal={showModal}

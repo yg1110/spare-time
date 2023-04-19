@@ -19,11 +19,11 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import ViewModuleIcon from '@mui/icons-material/ViewModule'
+import DayView from './component/Day'
+import CalendarView from './component/Calendar'
 import { SvgIconTypeMap } from '@mui/material/SvgIcon/SvgIcon'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
-import CalendarView from './component/Calendar'
-import DayView from './component/Day'
-import { MENUS } from './utils/Constant'
+import { MENUS } from './utils/constant'
 
 const drawerWidth = 240
 const openedMixin = (theme: Theme): CSSObject => ({

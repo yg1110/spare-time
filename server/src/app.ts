@@ -4,7 +4,12 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import mongoose, { ConnectOptions } from 'mongoose'
 import { initRoutesTodo } from './routes/todo'
+import { DATABASE_NAME, HOST, MONGO_URL, PORT } from './config'
+import { initRoutesDate } from './routes/date'
+import { initRoutesDiary } from './routes/diary'
 import { initRoutesTime } from './routes/time'
+import { initRoutesSchedule } from './routes/schedule'
+import { initRoutesSleep } from './routes/sleepHour'
 
 class App {
   private app: Express
@@ -13,15 +18,18 @@ class App {
     this.app = express()
     this.config()
     this.routes()
+    initRoutesDate(this.app)
     initRoutesTodo(this.app)
+    initRoutesDiary(this.app)
     initRoutesTime(this.app)
+    initRoutesSchedule(this.app)
+    initRoutesSleep(this.app)
     this.connectDB()
   }
 
   public start(): void {
-    const port = process.env.PORT || 3000
-    this.app.listen(port, () => {
-      console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
+    this.app.listen(PORT, () => {
+      console.log(`⚡️[server]: Server is running at ${HOST}:${PORT}`)
     })
   }
 
@@ -38,7 +46,7 @@ class App {
   }
 
   private async connectDB(): Promise<void> {
-    const mongoUrl = 'mongodb://localhost:27017/calendar'
+    const mongoUrl = `${MONGO_URL}/${DATABASE_NAME}`
     try {
       await mongoose.connect(mongoUrl, {
         useNewUrlParser: true,

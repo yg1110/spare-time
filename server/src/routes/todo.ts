@@ -1,8 +1,9 @@
 import { Application, Request, Response } from 'express'
 import Todo, { ITodo } from '../models/todo'
+import { BASE_URL } from '../config'
 
 export const initRoutesTodo = (app: Application) => {
-  app.get('/todos', async (req: Request, res: Response) => {
+  app.get(`${BASE_URL}/todos`, async (req: Request, res: Response) => {
     try {
       const todos: ITodo[] = await Todo.find().exec()
       res.status(200).json(todos)
@@ -12,7 +13,7 @@ export const initRoutesTodo = (app: Application) => {
     }
   })
 
-  app.post('/todos', async (req: Request, res: Response) => {
+  app.post(`${BASE_URL}/todos`, async (req: Request, res: Response) => {
     const { title, description, completed } = req.body
     const todo: ITodo = new Todo({
       title,
@@ -28,7 +29,7 @@ export const initRoutesTodo = (app: Application) => {
     }
   })
 
-  app.get('/todos/:id', async (req: Request, res: Response) => {
+  app.get(`${BASE_URL}/todos/:id`, async (req: Request, res: Response) => {
     const { id } = req.params
     try {
       const todo: ITodo | null = await Todo.findById(id).exec()
@@ -43,7 +44,7 @@ export const initRoutesTodo = (app: Application) => {
     }
   })
 
-  app.patch('/todos/:id', async (req: Request, res: Response) => {
+  app.patch(`${BASE_URL}/todos/:id`, async (req: Request, res: Response) => {
     const { id } = req.params
     const { title, description, completed } = req.body
     try {
@@ -69,7 +70,7 @@ export const initRoutesTodo = (app: Application) => {
     }
   })
 
-  app.delete('/todos/:id', async (req: Request, res: Response) => {
+  app.delete(`${BASE_URL}/todos/:id`, async (req: Request, res: Response) => {
     const { id } = req.params
     try {
       const deletedTodo: ITodo | null = await Todo.findByIdAndDelete(id).exec()

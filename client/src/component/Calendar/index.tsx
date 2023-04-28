@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -7,10 +7,10 @@ import FullCalendar from '@fullcalendar/react'
 import CalendarModal from '../Modal/CalendarModal'
 import dayjs from 'dayjs'
 import { LANG } from '../../utils/constant'
-import { DATE } from '../../models/Calendar'
+import { CALENDAR_VIEW, DATE } from '../../models/Calendar'
 import { DatesSetArg, EventClickArg } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
-import { selectedDateState } from '../../state/calendar.state'
+import { initialViewState, selectedDateState } from '../../state/calendar.state'
 import './calendar.css'
 
 const Container = styled.div`
@@ -23,9 +23,18 @@ const Container = styled.div`
 `
 
 const CalendarView: React.FC = () => {
+  const calendarRef = React.useRef<FullCalendar>(null)
   const [showModal, setShowModal] = useState(false)
+  const [initialView, setInitialView] =
+    useRecoilState<CALENDAR_VIEW>(initialViewState)
   const [selectedDate, setSelectedDate] =
     useRecoilState<DATE>(selectedDateState)
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      calendarRef.current.getApi().changeView(initialView.type)
+    }
+  }, [initialView])
 
   const handleDateSelect = (event: DateClickArg) => {
     setShowModal(true)
@@ -63,13 +72,10 @@ const CalendarView: React.FC = () => {
   return (
     <Container>
       <FullCalendar
+        ref={calendarRef}
         locale={LANG}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        }}
+        headerToolbar={false}
         events={[
           {
             title: 'Event 1',
@@ -82,7 +88,7 @@ const CalendarView: React.FC = () => {
             end: '2023-04-18T15:00:00',
           },
         ]}
-        initialView="timeGridDay"
+        initialView={initialView.type}
         selectable={true}
         dayMaxEvents={true}
         // datesSet={handleMonthChange}

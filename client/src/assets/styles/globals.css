@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
-.MuiBox-root {
-    padding: 7px !important;
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
 }

@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
 import CalendarModal from '../Modal/CalendarModal'
-import dayjs from 'dayjs'
-import { LANG } from '../../utils/constant'
-import { CALENDAR_VIEW, DATE } from '../../models/Calendar'
-import { DatesSetArg, EventClickArg } from '@fullcalendar/core'
+import { CALENDAR_VIEW_MODE, LANG } from '../../utils/constant'
+import { DATE } from '../../models/Calendar'
+import { EventClickArg, EventInput } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
-import { initialViewState, selectedDateState } from '../../state/calendar.state'
-import './calendar.css'
+import { selectedDateState } from '../../state/calendar.state'
+import './calendar-view.css'
 
 const Container = styled.div`
   display: flex;
@@ -22,35 +21,30 @@ const Container = styled.div`
   }
 `
 
-const CalendarView: React.FC = () => {
-  const calendarRef = React.useRef<FullCalendar>(null)
+interface Props {
+  calendarRef: React.RefObject<FullCalendar>
+}
+
+const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   const [showModal, setShowModal] = useState(false)
-  const [initialView, setInitialView] =
-    useRecoilState<CALENDAR_VIEW>(initialViewState)
+  const [calendarEvents, setCalendarEvents] = useState<EventInput[]>([])
   const [selectedDate, setSelectedDate] =
     useRecoilState<DATE>(selectedDateState)
 
-  useEffect(() => {
-    if (calendarRef.current) {
-      calendarRef.current.getApi().changeView(initialView.type)
-    }
-  }, [initialView])
-
-  const handleDateSelect = (event: DateClickArg) => {
+  const handleDateSelect = (arg: DateClickArg) => {
     setShowModal(true)
     setSelectedDate({
-      title: event.dateStr,
-      date: event.date,
+      title: arg.dateStr,
+      date: arg.date,
     })
   }
 
-  const handleMonthChange = async (event: DatesSetArg) => {
-    const month = dayjs(event.start).add(1, 'month')
-    const title = month.format('YYYY년 M월 M일')
-    setSelectedDate({
-      ...selectedDate,
-      title: title,
-    })
+  const submitDate = (newEvent: EventInput) => {
+    const calendarApi = calendarRef.current?.getApi()
+    if (calendarApi) {
+      setCalendarEvents([...calendarEvents, newEvent])
+      handleModalClose()
+    }
   }
 
   const handleModalClose = () => {
@@ -76,28 +70,17 @@ const CalendarView: React.FC = () => {
         locale={LANG}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={false}
-        events={[
-          {
-            title: 'Event 1',
-            start: '2023-04-18T09:00:00',
-            end: '2023-04-18T11:00:00',
-          },
-          {
-            title: 'Event 2',
-            start: '2023-04-18T13:00:00',
-            end: '2023-04-18T15:00:00',
-          },
-        ]}
-        initialView={initialView.type}
+        events={calendarEvents}
+        initialView={CALENDAR_VIEW_MODE.DAY}
         selectable={true}
         dayMaxEvents={true}
-        // datesSet={handleMonthChange}
         eventClick={handleEventClick}
-        // dateClick={handleDateSelect}
+        dateClick={handleDateSelect}
       />
       <CalendarModal
         showModal={showModal}
         selectedDate={selectedDate}
+        submitEvent={submitDate}
         closeEvent={handleModalClose}
       />
     </Container>

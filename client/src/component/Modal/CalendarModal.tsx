@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import dayjs, { Dayjs } from 'dayjs'
+import Modal from './index'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import Modal from './index'
 import { LANG } from '../../utils/constant'
 import { isValidDate } from '../../utils/helper'
 import { DATE, TIME } from '../../models/Calendar'
-import { createTime } from '../../services/time.service'
+import { EventInput } from '@fullcalendar/core'
 
 const Container = styled.div`
   width: 100%;
@@ -66,18 +66,20 @@ const Input = styled.input`
 interface Props {
   selectedDate: DATE
   showModal: boolean
+  submitEvent: (event: EventInput) => void
   closeEvent: () => void
 }
 
 const CalendarModal: React.FC<Props> = ({
   selectedDate,
   showModal,
+  submitEvent,
   closeEvent,
 }) => {
   const [time, setTime] = React.useState<TIME>({
     startTime: dayjs().startOf('day'),
     endTime: dayjs(),
-    category: '',
+    title: '',
   })
 
   useEffect(() => {
@@ -104,18 +106,19 @@ const CalendarModal: React.FC<Props> = ({
       alert('종료 시간을 선택해주세요.')
       return
     }
-    const submitTime = {
-      category: time.category,
-      startTime: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
-      endTime: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
-    } as unknown as TIME
-    const res = await createTime(submitTime)
-    if (res) {
-      closeEvent()
-      alert('Time Registration Success')
-    } else {
-      alert(res)
+    const event = {
+      title: time.title,
+      start: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
+      end: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
     }
+    submitEvent(event)
+    // const res = await createTime(submitTime)
+    // if (res) {
+    //   closeEvent()
+    //   alert('Time Registration Success')
+    // } else {
+    //   alert(res)
+    // }
   }
 
   function onChangeTime(name: string, selectTime: Dayjs | null) {
@@ -142,12 +145,8 @@ const CalendarModal: React.FC<Props> = ({
         <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
           <RowContainer>
             <TimeWrapper>
-              <TimeLabel>카테고리</TimeLabel>
-              <Input
-                name="category"
-                value={time.category}
-                onChange={onChangeValue}
-              />
+              <TimeLabel>제목</TimeLabel>
+              <Input name="title" value={time.title} onChange={onChangeValue} />
             </TimeWrapper>
             <TimeWrapper>
               <TimeLabel>시작 시간</TimeLabel>

@@ -8,9 +8,5 @@ export interface DATE {
 export interface TIME {
   startTime: Dayjs
   endTime: Dayjs
-  category: string
-}
-
-export interface CALENDAR_VIEW {
-  type: string
+  title: string
 }

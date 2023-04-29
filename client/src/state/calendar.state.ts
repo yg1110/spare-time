@@ -1,6 +1,6 @@
 import { atom } from 'recoil'
 import dayjs from 'dayjs'
-import { CALENDAR_VIEW, DATE } from '../models/Calendar'
+import { DATE } from '../models/Calendar'
 
 export const selectedDateState = atom<DATE>({
   key: 'selectedDateState',
@@ -10,9 +10,7 @@ export const selectedDateState = atom<DATE>({
   },
 })
 
-export const initialViewState = atom<CALENDAR_VIEW>({
-  key: 'initialView',
-  default: {
-    type: 'timeGridDay',
-  },
+export const calendarTitleState = atom<string>({
+  key: 'calendarTitle',
+  default: '',
 })

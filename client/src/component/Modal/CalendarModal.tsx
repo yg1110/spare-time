@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import Modal from './index'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LANG } from '../../utils/constant'
-import { isValidDate } from '../../utils/helper'
-import { DATE, TIME } from '../../models/Calendar'
+import { DATE } from '../../models/Calendar'
 import { EventInput } from '@fullcalendar/core'
+import { useCalendarModal } from '@/hooks/useCalendarModal'
 
 const Container = styled.div`
   width: 100%;
@@ -76,68 +76,11 @@ const CalendarModal: React.FC<Props> = ({
   submitEvent,
   closeEvent,
 }) => {
-  const [time, setTime] = React.useState<TIME>({
-    startTime: dayjs().startOf('day'),
-    endTime: dayjs(),
-    title: '',
-  })
-
-  useEffect(() => {
-    if (selectedDate) {
-      const nowTime = dayjs(time.endTime).format('HH:mm:ss')
-      const startDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
-      const endDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
-      setTime({
-        ...time,
-        startTime: dayjs(startDate + nowTime).startOf('day'),
-        endTime: dayjs(endDate + nowTime),
-      })
-    }
-  }, [selectedDate])
-
-  async function handleSubmitSpareTime(): Promise<void> {
-    const isValidStartDate = isValidDate(time.startTime)
-    const isValidEndDate = isValidDate(time.endTime)
-    if (!isValidStartDate) {
-      alert('시작 시간을 선택해주세요.')
-      return
-    }
-    if (!isValidEndDate) {
-      alert('종료 시간을 선택해주세요.')
-      return
-    }
-    const event = {
-      title: time.title,
-      start: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
-      end: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
-    }
-    submitEvent(event)
-    // const res = await createTime(submitTime)
-    // if (res) {
-    //   closeEvent()
-    //   alert('Time Registration Success')
-    // } else {
-    //   alert(res)
-    // }
-  }
-
-  function onChangeTime(name: string, selectTime: Dayjs | null) {
-    if (selectTime) {
-      setTime({
-        ...time,
-        [name]: dayjs(selectTime),
-      })
-    }
-  }
-
-  function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target
-    setTime({
-      ...time,
-      [name]: value,
+  const { time, onChangeValue, onChangeTime, handleSubmitSpareTime } =
+    useCalendarModal({
+      selectedDate: selectedDate,
+      submitEvent: submitEvent,
     })
-  }
-
   return (
     <Modal visible={showModal} close={closeEvent} width={300}>
       <Container>

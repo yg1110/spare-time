@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import CalendarView from '../component/CalendarView'
 import Nav from '../component/Nav'
 import styled from 'styled-components'
-import FullCalendar from '@fullcalendar/react'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
-import { useRecoilState } from 'recoil'
-import { calendarTitleState } from '@/state/calendar.state'
+import { useCalendar } from '@/hooks/useCalendar'
 
 const Container = styled.div`
   display: flex;
@@ -27,34 +25,7 @@ const Title = styled.h1`
   font-size: 1rem;
 `
 const Calendar: React.FC = () => {
-  const calendarRef = React.useRef<FullCalendar>(null)
-  const [title, setTitle] = useRecoilState<string>(calendarTitleState)
-
-  useEffect(() => {
-    if (calendarRef.current) {
-      const calendarApi = calendarRef.current?.getApi()
-      if (calendarApi) {
-        setTitle(calendarApi?.view?.title ?? '')
-      }
-    }
-  }, [calendarRef.current])
-
-  const handlePrev = () => {
-    const calendarApi = calendarRef.current?.getApi()
-    if (calendarApi) {
-      calendarApi.prev()
-      setTitle(calendarApi?.view?.title ?? '')
-    }
-  }
-
-  const handleNext = () => {
-    const calendarApi = calendarRef.current?.getApi()
-    if (calendarApi) {
-      calendarApi.next()
-      setTitle(calendarApi?.view?.title ?? '')
-    }
-  }
-
+  const { title, handlePrev, handleNext, calendarRef } = useCalendar()
   return (
     <Container>
       <Header>

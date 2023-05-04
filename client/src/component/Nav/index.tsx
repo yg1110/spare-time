@@ -8,39 +8,16 @@ import AddIcon from '@mui/icons-material/Add'
 import TodayIcon from '@mui/icons-material/Today'
 import WebAssetIcon from '@mui/icons-material/WebAsset'
 import FullCalendar from '@fullcalendar/react'
-import { useRecoilState } from 'recoil'
-import { calendarTitleState } from '@/state/calendar.state'
+import Link from 'next/link'
 import { CALENDAR_VIEW_MODE, MENUS } from '@/utils/constant'
+import { useNav } from '@/hooks/useNav'
 
 interface Props {
   calendarRef: React.RefObject<FullCalendar>
 }
 
 const Nav: React.FC<Props> = ({ calendarRef }) => {
-  const [value, setValue] = React.useState<string>(CALENDAR_VIEW_MODE.WEEK)
-  const [_, setTitle] = useRecoilState<string>(calendarTitleState)
-
-  const onChangeMenu = (
-    event: React.SyntheticEvent,
-    newValue: keyof typeof CALENDAR_VIEW_MODE
-  ) => {
-    const calendarApi = calendarRef.current?.getApi()
-
-    if (typeof newValue === 'string') {
-      setValue(newValue)
-      if (calendarApi) {
-        calendarApi.changeView(newValue)
-        setTitle(calendarApi?.view?.title ?? '')
-      }
-    }
-    if (typeof newValue === 'number') {
-      if (calendarApi) {
-        calendarApi.today()
-        setTitle(calendarApi?.view?.title ?? '')
-      }
-    }
-  }
-
+  const { value, onChangeMenu } = useNav(calendarRef)
   return (
     <Box>
       <BottomNavigation showLabels value={value} onChange={onChangeMenu}>
@@ -60,7 +37,12 @@ const Nav: React.FC<Props> = ({ calendarRef }) => {
           value={CALENDAR_VIEW_MODE.DAY}
           icon={<WebAssetIcon />}
         />
-        <BottomNavigationAction label={MENUS.ADD} icon={<AddIcon />} />
+        <BottomNavigationAction
+          href={'/add'}
+          component={Link}
+          label={MENUS.ADD}
+          icon={<AddIcon />}
+        ></BottomNavigationAction>
       </BottomNavigation>
     </Box>
   )

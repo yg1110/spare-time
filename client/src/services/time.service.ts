@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios'
-import { REACT_APP_API_SERVER_URL } from '../config'
+import { NEXT_APP_API_SERVER_URL } from '../config'
 import { TIME } from '../models/Calendar'
 
 export const createTime = async <T>(time: TIME): Promise<T> => {
-  const url = REACT_APP_API_SERVER_URL + '/api/time'
+  const url = NEXT_APP_API_SERVER_URL + '/api/time'
   try {
     return await axios.post(url, time)
   } catch (error) {
@@ -16,7 +16,7 @@ export const createTime = async <T>(time: TIME): Promise<T> => {
 }
 
 export const getHours = async <T>(date: string): Promise<T> => {
-  const url = REACT_APP_API_SERVER_URL + `/api/time/${date}`
+  const url = NEXT_APP_API_SERVER_URL + `/api/time/${date}`
   try {
     const { data } = await axios.get(url)
     return data

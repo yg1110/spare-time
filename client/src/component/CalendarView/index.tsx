@@ -4,13 +4,12 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
-import CalendarModal from '../Modal/CalendarModal'
-import { CALENDAR_VIEW_MODE, LANG } from '../../utils/constant'
-import { DATE } from '../../models/Calendar'
+import CalendarModal from '@/component/Modal/CalendarModal'
 import { EventClickArg, EventInput } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
-import { selectedDateState } from '../../state/calendar.state'
-import './calendar-view.css'
+import { DATE } from '@/models/Calendar'
+import { CALENDAR_VIEW_MODE, LANG } from '@/utils/constant'
+import { selectedDateState } from '@/state/calendar.state'
 
 const Container = styled.div`
   display: flex;

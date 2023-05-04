@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FullCalendar from '@fullcalendar/react'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 import { useRecoilState } from 'recoil'
-import { calendarTitleState } from '../state/calendar.state'
+import { calendarTitleState } from '@/state/calendar.state'
 
 const Container = styled.div`
   display: flex;

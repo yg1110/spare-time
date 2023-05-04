@@ -2,6 +2,13 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ./src",
+    "fix": "eslint ./src --fix"
+  },
   "dependencies": {
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.10.6",
@@ -15,54 +22,28 @@
     "@mui/material": "^5.11.16",
     "@mui/styled-engine-sc": "^5.11.11",
     "@mui/x-date-pickers": "^6.2.0",
-    "@types/node": "^16.18.23",
-    "@types/react": "^18.0.33",
+    "@types/node": "18.16.3",
+    "@types/react": "18.2.0",
     "@types/react-date-range": "^1.4.4",
-    "@types/react-dom": "^18.0.11",
-    "@types/react-router-dom": "^5.3.3",
+    "@types/react-dom": "18.2.1",
     "@types/recoil": "^0.0.9",
     "@types/styled-components": "^5.1.26",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
     "axios": "^1.3.5",
+    "babel-plugin-styled-components": "^2.1.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
-    "eslint": "^8.36.0",
+    "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.8.7",
-    "react": "^18.2.0",
+    "next": "13.3.4",
+    "prettier": "^2.8.8",
+    "react": "18.2.0",
     "react-date-range": "^1.4.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
+    "react-dom": "18.2.0",
     "recoil": "^0.7.7",
     "styled-components": "^5.3.9",
-    "typescript": "^4.9.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "lint": "eslint ./src",
-    "fix": "eslint ./src --fix"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "typescript": "5.0.4"
   }
 }

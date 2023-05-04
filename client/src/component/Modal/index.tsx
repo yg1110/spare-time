@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import closeButton from '../../assets/images/close.png'
+import Image from 'next/image'
+import closeButton from '@/images/close.png'
+import styles from './modal.module.css'
 
 const Overlay = styled.div`
   position: fixed;
@@ -25,15 +27,6 @@ const Container = styled.div<{ width: number }>`
   border-radius: 6px;
 `
 
-const Image = styled.img`
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  top: 30px;
-  right: 30px;
-  cursor: pointer;
-`
-
 interface ModalProps {
   visible: boolean
   children: any
@@ -51,7 +44,12 @@ export default function Modal(props: ModalProps): JSX.Element | null {
     <Overlay onClick={close} ref={overlayRef}>
       <Container onClick={stopPropagation} width={props.width}>
         {children}
-        <Image onClick={close} src={closeButton} alt={'close-button'} />
+        <Image
+          onClick={close}
+          src={closeButton}
+          alt={'close-button'}
+          className={styles.closeButton}
+        />
       </Container>
     </Overlay>
   ) : null

@@ -1,7 +1,9 @@
 import React from 'react'
-import CalendarView from '../component/CalendarView'
-import Nav from '../component/Nav'
 import styled from 'styled-components'
+import CalendarView from '@/component/CalendarView'
+import Nav from '@/component/Nav'
+import FullCalendar from '@fullcalendar/react'
+import CalendarModal from '@/component/Modal/CalendarModal'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
 import { useCalendar } from '@/hooks/useCalendar'
 
@@ -24,18 +26,22 @@ const ButtonWrapper = styled.div``
 const Title = styled.h1`
   font-size: 1rem;
 `
+
 const Calendar: React.FC = () => {
-  const { title, handlePrev, handleNext, calendarRef } = useCalendar()
+  const calendarRef = React.useRef<FullCalendar>(null)
+  const { calendar, handlePrev, handleNext } = useCalendar(calendarRef)
+
   return (
     <Container>
       <Header>
-        <Title>{title}</Title>
+        <Title>{calendar.title}</Title>
         <ButtonWrapper>
           <ArrowBackIos onClick={handlePrev} />
           <ArrowForwardIos onClick={handleNext} />
         </ButtonWrapper>
       </Header>
       <CalendarView calendarRef={calendarRef} />
+      <CalendarModal calendarRef={calendarRef} />
       <Nav calendarRef={calendarRef} />
     </Container>
   )

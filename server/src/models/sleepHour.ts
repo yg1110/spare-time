@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 
 export interface ISleepHour extends Document {
-  dateId: string
   startTime: Date
   endTIme: Date
   sleepingTime: number

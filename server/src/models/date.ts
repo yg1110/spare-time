@@ -1,15 +1,26 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
+import { ITodo } from './todo'
+import { IDiary } from './diary'
+import { ISchedule } from './schedule'
+import { ITime } from './time'
+import { ISleepHour } from './sleepHour'
 
 export interface IDate extends Document {
-  title: string
-  start: Date
-  end: Date
+  date: string
+  todos?: ITodo[]
+  diaries?: IDiary[]
+  schedules?: ISchedule[]
+  times?: ITime[]
+  sleepHours?: ISleepHour[]
 }
 
 const dateSchema: Schema = new mongoose.Schema({
-  title: { type: String, required: true, default: '' },
-  start: { type: Date, required: true, default: new Date() },
-  end: { type: Date, required: true, default: new Date() },
+  date: { type: String, required: true, default: new Date() },
+  todos: { type: Array, default: [] },
+  diaries: { type: Array, default: [] },
+  schedules: { type: Array, default: [] },
+  times: { type: Array, default: [] },
+  sleepHours: { type: Array, default: [] },
 })
 
 const CalendarDate: Model<IDate> = mongoose.model<IDate>('dates', dateSchema)

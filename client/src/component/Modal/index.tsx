@@ -17,12 +17,18 @@ const Overlay = styled.div`
   justify-content: center;
 `
 
-const Container = styled.div<{ width: number }>`
+const Container = styled.div<{
+  width: string | number
+  height: string | number
+}>`
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  width: ${(props) => `${props.width}px`};
+  width: ${(props) =>
+    typeof props.width === 'number' ? `${props.width}px` : props.width};
+  height: ${(props) =>
+    typeof props.height === 'number' ? `${props.height}px` : props.height};
   background-color: white;
   border-radius: 6px;
 `
@@ -30,7 +36,8 @@ const Container = styled.div<{ width: number }>`
 interface ModalProps {
   visible: boolean
   children: any
-  width: number
+  width: string | number
+  height: string | number
   close: (e: React.MouseEvent<HTMLElement>) => void
 }
 
@@ -42,7 +49,11 @@ export default function Modal(props: ModalProps): JSX.Element | null {
   }
   return visible ? (
     <Overlay onClick={close} ref={overlayRef}>
-      <Container onClick={stopPropagation} width={props.width}>
+      <Container
+        onClick={stopPropagation}
+        width={props.width}
+        height={props.height}
+      >
         {children}
         <Image
           onClick={close}

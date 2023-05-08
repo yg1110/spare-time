@@ -1,38 +1,42 @@
 import React, { useEffect } from 'react'
-import { DATE, TIME } from '@/models/Calendar'
 import dayjs, { Dayjs } from 'dayjs'
+import FullCalendar from '@fullcalendar/react'
+import { CATEGORY } from '@/utils/constant'
+import { SelectChangeEvent } from '@mui/material'
+import { CALENDAR_STATE, SCHEDULE } from '@/models/Calendar'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { calendarModalState } from '@/state/modal.state'
 import { isValidDate } from '@/utils/helper'
-import { EventInput } from '@fullcalendar/core'
+import { calendarState } from '@/state/calendar.state'
+import { useCalendarAPI } from '@/hooks/useCalendarAPI'
 
-interface Props {
-  selectedDate: DATE
-  submitEvent: (event: EventInput) => void
+const INIT_SCHEDULE = {
+  title: '',
+  start: dayjs().startOf('day'),
+  end: dayjs().endOf('day'),
 }
 
-export function useCalendarModal(props: Props) {
-  const { selectedDate, submitEvent } = props
-  const [time, setTime] = React.useState<TIME>({
-    startTime: dayjs().startOf('day'),
-    endTime: dayjs(),
-    title: '',
-  })
+export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
+  const { createSchedule } = useCalendarAPI(calendarRef)
+  const [category, setCategory] = React.useState<string>(CATEGORY.SCHEDULE.name)
+  const [schedule, setSchedule] = React.useState<SCHEDULE>({ ...INIT_SCHEDULE })
+  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
+  const calendar = useRecoilValue<CALENDAR_STATE>(calendarState)
+  const title = dayjs(calendar.selectedDate).format('YYYY년 MM월 DD일')
 
   useEffect(() => {
-    if (selectedDate) {
-      const nowTime = dayjs(time.endTime).format('HH:mm:ss')
-      const startDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
-      const endDate = dayjs(selectedDate.date).format('YYYY-MM-DD')
-      setTime({
-        ...time,
-        startTime: dayjs(startDate + nowTime).startOf('day'),
-        endTime: dayjs(endDate + nowTime),
+    if (calendar.selectedDate) {
+      setSchedule({
+        ...schedule,
+        start: dayjs(calendar.selectedDate),
+        end: dayjs(calendar.selectedDate).endOf('day'),
       })
     }
-  }, [selectedDate])
+  }, [calendar])
 
   async function handleSubmitSpareTime(): Promise<void> {
-    const isValidStartDate = isValidDate(time.startTime)
-    const isValidEndDate = isValidDate(time.endTime)
+    const isValidStartDate = isValidDate(schedule.start)
+    const isValidEndDate = isValidDate(schedule.end)
     if (!isValidStartDate) {
       alert('시작 시간을 선택해주세요.')
       return
@@ -42,36 +46,52 @@ export function useCalendarModal(props: Props) {
       return
     }
     const event = {
-      title: time.title,
-      start: dayjs(time.startTime).format('YYYY-MM-DD HH:mm:ss'),
-      end: dayjs(time.endTime).format('YYYY-MM-DD HH:mm:ss'),
+      title: schedule.title,
+      start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
+      end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
     }
-    submitEvent(event)
-    // const res = await createTime(submitTime)
-    // if (res) {
-    //   closeEvent()
-    //   alert('Time Registration Success')
-    // } else {
-    //   alert(res)
-    // }
+    await createSchedule(event)
+    setShowModal(false)
+    setSchedule({
+      title: '',
+      start: dayjs().startOf('day'),
+      end: dayjs().endOf('day'),
+    })
   }
 
   function onChangeTime(name: string, selectTime: Dayjs | null) {
     if (selectTime) {
-      setTime({
-        ...time,
-        [name]: dayjs(selectTime),
+      setSchedule({
+        ...schedule,
+        [name]: selectTime,
       })
     }
   }
 
   function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
-    setTime({
-      ...time,
+    setSchedule({
+      ...schedule,
       [name]: value,
     })
   }
 
-  return { time, onChangeValue, onChangeTime, handleSubmitSpareTime }
+  function onChangeCategory(event: SelectChangeEvent) {
+    setCategory(event.target.value)
+  }
+
+  function onCloseModal() {
+    setShowModal(false)
+  }
+
+  return {
+    title,
+    schedule,
+    category,
+    onCloseModal,
+    onChangeValue,
+    onChangeTime,
+    onChangeCategory,
+    handleSubmitSpareTime,
+  }
 }

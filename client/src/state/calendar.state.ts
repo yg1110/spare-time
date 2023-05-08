@@ -1,16 +1,13 @@
-import dayjs from 'dayjs'
 import { atom } from 'recoil'
-import { DATE } from '../models/Calendar'
+import { CALENDAR_STATE } from '@/models/Calendar'
+import { CALENDAR_VIEW_MODE } from '@/utils/constant'
 
-export const selectedDateState = atom<DATE>({
-  key: 'selectedDateState',
+export const calendarState = atom<CALENDAR_STATE>({
+  key: 'calendarState',
   default: {
-    title: dayjs(new Date()).format('YYYY년 M월'),
-    date: new Date(),
+    title: '',
+    calendarEvents: [],
+    selectedDate: new Date(),
+    selectedMenu: CALENDAR_VIEW_MODE.WEEK,
   },
-})
-
-export const calendarTitleState = atom<string>({
-  key: 'calendarTitle',
-  default: '',
 })

@@ -4,11 +4,8 @@ import BottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth'
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek'
-import AddIcon from '@mui/icons-material/Add'
-import TodayIcon from '@mui/icons-material/Today'
 import WebAssetIcon from '@mui/icons-material/WebAsset'
 import FullCalendar from '@fullcalendar/react'
-import Link from 'next/link'
 import { CALENDAR_VIEW_MODE, MENUS } from '@/utils/constant'
 import { useNav } from '@/hooks/useNav'
 
@@ -17,11 +14,11 @@ interface Props {
 }
 
 const Nav: React.FC<Props> = ({ calendarRef }) => {
-  const { value, onChangeMenu } = useNav(calendarRef)
+  const { selectedMenu, onChangeMenu } = useNav(calendarRef)
   return (
     <Box>
-      <BottomNavigation showLabels value={value} onChange={onChangeMenu}>
-        <BottomNavigationAction label={MENUS.TODAY} icon={<TodayIcon />} />
+      <BottomNavigation showLabels value={selectedMenu} onChange={onChangeMenu}>
+        {/*<BottomNavigationAction label={MENUS.TODAY} icon={<TodayIcon />} />*/}
         <BottomNavigationAction
           label={MENUS.MONTH}
           value={CALENDAR_VIEW_MODE.MONTH}
@@ -37,12 +34,12 @@ const Nav: React.FC<Props> = ({ calendarRef }) => {
           value={CALENDAR_VIEW_MODE.DAY}
           icon={<WebAssetIcon />}
         />
-        <BottomNavigationAction
-          href={'/add'}
-          component={Link}
-          label={MENUS.ADD}
-          icon={<AddIcon />}
-        ></BottomNavigationAction>
+        {/*<BottomNavigationAction*/}
+        {/*  href={'/add'}*/}
+        {/*  component={Link}*/}
+        {/*  label={MENUS.ADD}*/}
+        {/*  icon={<AddIcon />}*/}
+        {/*></BottomNavigationAction>*/}
       </BottomNavigation>
     </Box>
   )

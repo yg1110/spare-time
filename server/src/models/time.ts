@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 
 export interface ITime extends Document {
-  dateId: string
   playTime: number
   focusTime: number
 }

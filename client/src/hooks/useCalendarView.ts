@@ -1,35 +1,20 @@
-import React, { useState } from 'react'
-import FullCalendar from '@fullcalendar/react'
-import { EventClickArg, EventInput } from '@fullcalendar/core'
+import { EventClickArg } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
-import { DATE } from '@/models/Calendar'
-import { selectedDateState } from '@/state/calendar.state'
+import { calendarState } from '@/state/calendar.state'
 import { DateClickArg } from '@fullcalendar/interaction'
+import { calendarModalState } from '@/state/modal.state'
+import { CALENDAR_STATE } from '@/models/Calendar'
 
-export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
-  const [showModal, setShowModal] = useState(false)
-  const [calendarEvents, setCalendarEvents] = useState<EventInput[]>([])
-  const [selectedDate, setSelectedDate] =
-    useRecoilState<DATE>(selectedDateState)
+export function useCalendarView() {
+  const [showModal, setShowModal] = useRecoilState<boolean>(calendarModalState)
+  const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
   const handleDateSelect = (arg: DateClickArg) => {
     setShowModal(true)
-    setSelectedDate({
-      title: arg.dateStr,
-      date: arg.date,
+    setCalendar({
+      ...calendar,
+      selectedDate: arg.date,
     })
-  }
-
-  const submitDate = (newEvent: EventInput) => {
-    const calendarApi = calendarRef.current?.getApi()
-    if (calendarApi) {
-      setCalendarEvents([...calendarEvents, newEvent])
-      handleModalClose()
-    }
-  }
-
-  const handleModalClose = () => {
-    setShowModal(false)
   }
 
   function handleEventClick(clickInfo: EventClickArg) {
@@ -46,11 +31,8 @@ export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
 
   return {
     showModal,
-    selectedDate,
-    calendarEvents,
-    submitDate,
+    calendar,
     handleEventClick,
     handleDateSelect,
-    handleModalClose,
   }
 }

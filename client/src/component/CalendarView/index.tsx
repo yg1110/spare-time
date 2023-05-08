@@ -4,9 +4,11 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
-import CalendarModal from '@/component/Modal/CalendarModal'
-import { CALENDAR_VIEW_MODE, LANG } from '@/utils/constant'
+import { LANG } from '@/utils/constant'
 import { useCalendarView } from '@/hooks/useCalendarView'
+import { useRecoilValue } from 'recoil'
+import { calendarState } from '@/state/calendar.state'
+import { CALENDAR_STATE } from '@/models/Calendar'
 
 const Container = styled.div`
   display: flex;
@@ -22,34 +24,22 @@ interface Props {
 }
 
 const CalendarView: React.FC<Props> = ({ calendarRef }) => {
-  const {
-    showModal,
-    selectedDate,
-    calendarEvents,
-    submitDate,
-    handleEventClick,
-    handleDateSelect,
-    handleModalClose,
-  } = useCalendarView(calendarRef)
+  const { calendarEvents, selectedMenu } =
+    useRecoilValue<CALENDAR_STATE>(calendarState)
+  const { handleEventClick, handleDateSelect } = useCalendarView()
   return (
     <Container>
       <FullCalendar
         ref={calendarRef}
         locale={LANG}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={false}
-        events={calendarEvents}
-        initialView={CALENDAR_VIEW_MODE.DAY}
         selectable={true}
         dayMaxEvents={true}
+        events={calendarEvents}
+        initialView={selectedMenu}
         eventClick={handleEventClick}
         dateClick={handleDateSelect}
-      />
-      <CalendarModal
-        showModal={showModal}
-        selectedDate={selectedDate}
-        submitEvent={submitDate}
-        closeEvent={handleModalClose}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
       />
     </Container>
   )

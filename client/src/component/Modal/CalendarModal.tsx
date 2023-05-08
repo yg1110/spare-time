@@ -2,12 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import Modal from './index'
+import FullCalendar from '@fullcalendar/react'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LANG } from '../../utils/constant'
-import { DATE } from '../../models/Calendar'
-import { EventInput } from '@fullcalendar/core'
 import { useCalendarModal } from '@/hooks/useCalendarModal'
+import { CATEGORIES, LANG } from '@/utils/constant'
+import { MenuItem, Select } from '@mui/material'
+import { useRecoilValue } from 'recoil'
+import { calendarModalState } from '@/state/modal.state'
 
 const Container = styled.div`
   width: 100%;
@@ -26,6 +28,7 @@ const RowContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 30px;
+  max-width: 80%;
   font-weight: bold;
 `
 
@@ -55,7 +58,7 @@ const SubmitButtonText = styled.p`
 `
 
 const Input = styled.input`
-  width: 260px;
+  width: 100%;
   height: 54px;
   font-size: 18px;
   padding: 16.5px 14px;
@@ -64,47 +67,68 @@ const Input = styled.input`
 `
 
 interface Props {
-  selectedDate: DATE
-  showModal: boolean
-  submitEvent: (event: EventInput) => void
-  closeEvent: () => void
+  calendarRef: React.RefObject<FullCalendar>
 }
 
-const CalendarModal: React.FC<Props> = ({
-  selectedDate,
-  showModal,
-  submitEvent,
-  closeEvent,
-}) => {
-  const { time, onChangeValue, onChangeTime, handleSubmitSpareTime } =
-    useCalendarModal({
-      selectedDate: selectedDate,
-      submitEvent: submitEvent,
-    })
+const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
+  const showModal = useRecoilValue<boolean>(calendarModalState)
+  const {
+    title,
+    schedule,
+    category,
+    onCloseModal,
+    onChangeValue,
+    onChangeTime,
+    onChangeCategory,
+    handleSubmitSpareTime,
+  } = useCalendarModal(calendarRef)
   return (
-    <Modal visible={showModal} close={closeEvent} width={300}>
+    <Modal
+      visible={showModal}
+      close={onCloseModal}
+      width={'100vw'}
+      height={'100vh'}
+    >
       <Container>
-        <Title>{selectedDate.title}</Title>
+        <Title>{title}</Title>
         <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
           <RowContainer>
             <TimeWrapper>
+              <TimeLabel>카테고리</TimeLabel>
+              <Select
+                id="category-select"
+                value={category}
+                onChange={onChangeCategory}
+              >
+                {CATEGORIES.map((item) => (
+                  <MenuItem key={item.key} value={item.name}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </TimeWrapper>
+            <TimeWrapper>
               <TimeLabel>제목</TimeLabel>
-              <Input name="title" value={time.title} onChange={onChangeValue} />
+              <Input
+                name="title"
+                value={schedule.title}
+                onChange={onChangeValue}
+              />
             </TimeWrapper>
             <TimeWrapper>
               <TimeLabel>시작 시간</TimeLabel>
               <TimePicker
                 defaultValue={dayjs().startOf('day')}
-                value={time.startTime}
-                onChange={(time) => onChangeTime('startTime', time)}
+                value={schedule.start}
+                onChange={(time) => onChangeTime('start', time)}
               />
             </TimeWrapper>
             <TimeWrapper>
               <TimeLabel>종료 시간</TimeLabel>
               <TimePicker
                 defaultValue={dayjs().startOf('day')}
-                value={time.endTime}
-                onChange={(time) => onChangeTime('endTime', time)}
+                value={schedule.end}
+                onChange={(time) => onChangeTime('end', time)}
               />
             </TimeWrapper>
             <SubmitButton onClick={handleSubmitSpareTime}>

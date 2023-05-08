@@ -3,13 +3,8 @@ import express, { Express } from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import mongoose, { ConnectOptions } from 'mongoose'
-import { initRoutesTodo } from './routes/todo'
 import { DATABASE_NAME, HOST, MONGO_URL, PORT } from './config'
-import { initRoutesDate } from './routes/date'
-import { initRoutesDiary } from './routes/diary'
-import { initRoutesTime } from './routes/time'
-import { initRoutesSchedule } from './routes/schedule'
-import { initRoutesSleep } from './routes/sleepHour'
+import { initRoutes } from './routes'
 
 class App {
   private app: Express
@@ -17,13 +12,7 @@ class App {
   constructor() {
     this.app = express()
     this.config()
-    this.routes()
-    initRoutesDate(this.app)
-    initRoutesTodo(this.app)
-    initRoutesDiary(this.app)
-    initRoutesTime(this.app)
-    initRoutesSchedule(this.app)
-    initRoutesSleep(this.app)
+    initRoutes(this.app)
     this.connectDB()
   }
 
@@ -37,12 +26,6 @@ class App {
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: false }))
     this.app.use(cors())
-  }
-
-  private routes(): void {
-    this.app.get('/', (req, res) => {
-      res.send('Hello, world!')
-    })
   }
 
   private async connectDB(): Promise<void> {

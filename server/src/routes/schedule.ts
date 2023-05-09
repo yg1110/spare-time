@@ -8,10 +8,23 @@ async function getSchedules(req: Request, res: Response) {
   const { date } = req.params
   try {
     const models = await CalendarDate.findOne({ date }).exec()
-    console.log(`models`, models)
     return !models
       ? res.status(200).json([])
       : res.status(200).json(models.schedules)
+  } catch (error) {
+    console.error('Error getting schedules by ID', error)
+    return res.status(500).json({ error: 'Error getting schedules by DATE' })
+  }
+}
+
+async function getSchedulesRange(req: Request, res: Response) {
+  const { startDate, endDate } = req.params
+  try {
+    const models = await CalendarDate.find(
+      { date: { $gt: startDate, $lt: endDate } },
+      { schedules: 1 }
+    )
+    return !models ? res.status(200).json([]) : res.status(200).json(models)
   } catch (error) {
     console.error('Error getting schedules by ID', error)
     return res.status(500).json({ error: 'Error getting schedules by DATE' })
@@ -60,6 +73,11 @@ async function createSchedules(date: string, req: Request, res: Response) {
 export const initRoutesSchedule = (app: Application) => {
   app.get(`${BASE_URL}/dates/schedules/:date`, (req: Request, res: Response) =>
     getSchedules(req, res)
+  )
+
+  app.get(
+    `${BASE_URL}/dates/schedules/:startDate/:endDate`,
+    (req: Request, res: Response) => getSchedulesRange(req, res)
   )
 
   app.post(

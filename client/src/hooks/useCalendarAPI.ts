@@ -1,4 +1,8 @@
-import { createSchedules, getSchedules } from '@/services/schedules.service'
+import {
+  createSchedules,
+  getSchedules,
+  getSchedulesRange,
+} from '@/services/schedules.service'
 import { CALENDAR_STATE } from '@/models/Calendar'
 import { useRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
@@ -24,6 +28,26 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     }
   }
 
+  const fetchScheduleRange = async () => {
+    const calendarApi = calendarRef.current?.getApi()
+    if (calendarApi) {
+      const { currentStart, currentEnd } = calendarApi.view
+      const startDate = dayjs(currentStart).format('YYYY-MM-DD')
+      const endDate = dayjs(currentEnd).format('YYYY-MM-DD')
+      const schedule = await getSchedulesRange<EventInput[]>(startDate, endDate)
+      const calendarEvents = schedule.reduce(
+        (prev, curr) => prev.concat(curr.schedules),
+        []
+      )
+      if (schedule && schedule.length > 0) {
+        setCalendar({
+          ...calendar,
+          calendarEvents,
+        })
+      }
+    }
+  }
+
   const createSchedule = async (schedule: EventInput) => {
     const res = await createSchedules(schedule)
     if (res) {
@@ -33,5 +57,5 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     }
   }
 
-  return { fetchSchedule, createSchedule }
+  return { fetchSchedule, createSchedule, fetchScheduleRange }
 }

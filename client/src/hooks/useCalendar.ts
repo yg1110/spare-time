@@ -6,11 +6,11 @@ import { calendarState } from '@/state/calendar.state'
 import { useCalendarAPI } from '@/hooks/useCalendarAPI'
 
 export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
-  const { fetchSchedule } = useCalendarAPI(calendarRef)
+  const { fetchScheduleRange } = useCalendarAPI(calendarRef)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
   useEffect(() => {
-    fetchSchedule()
+    fetchScheduleRange()
   }, [])
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.prev()
-      await fetchSchedule()
+      await fetchScheduleRange()
       setCalendar({
         ...calendar,
         title: calendarApi?.view?.title ?? '',
@@ -39,7 +39,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.next()
-      await fetchSchedule()
+      await fetchScheduleRange()
       setCalendar({
         ...calendar,
         title: calendarApi?.view?.title ?? '',

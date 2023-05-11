@@ -1,38 +1,36 @@
 import React, { useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import FullCalendar from '@fullcalendar/react'
-import { CATEGORY } from '@/utils/constant'
 import { SelectChangeEvent } from '@mui/material'
-import { CALENDAR_STATE, SCHEDULE } from '@/models/Calendar'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { CALENDAR_STATE } from '@/models/Calendar'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
 import { isValidDate } from '@/utils/helper'
 import { calendarState } from '@/state/calendar.state'
 import { useCalendarAPI } from '@/hooks/useCalendarAPI'
-
-const INIT_SCHEDULE = {
-  title: '',
-  start: dayjs().startOf('day'),
-  end: dayjs().endOf('day'),
-}
+import { SCHEDULE_MODE } from '@/utils/constant'
 
 export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
-  const { createSchedule } = useCalendarAPI(calendarRef)
-  const [category, setCategory] = React.useState<string>(CATEGORY.SCHEDULE.name)
-  const [schedule, setSchedule] = React.useState<SCHEDULE>({ ...INIT_SCHEDULE })
+  const { createSchedule, updateSchedule, deleteSchedule } =
+    useCalendarAPI(calendarRef)
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
-  const calendar = useRecoilValue<CALENDAR_STATE>(calendarState)
+  const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
+  const { schedule, category } = calendar
   const title = dayjs(calendar.selectedDate).format('YYYY년 MM월 DD일')
+  const mode = schedule?._id ? SCHEDULE_MODE.MODIFY : SCHEDULE_MODE.CREATE
 
   useEffect(() => {
     if (calendar.selectedDate) {
-      setSchedule({
-        ...schedule,
-        start: dayjs(calendar.selectedDate),
-        end: dayjs(calendar.selectedDate).endOf('day'),
+      setCalendar({
+        ...calendar,
+        schedule: {
+          title: '',
+          start: dayjs(calendar.selectedDate),
+          end: dayjs(calendar.selectedDate).endOf('day'),
+        },
       })
     }
-  }, [calendar])
+  }, [calendar.selectedDate])
 
   async function handleSubmitSpareTime(): Promise<void> {
     const isValidStartDate = isValidDate(schedule.start)
@@ -52,32 +50,65 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     }
     await createSchedule(event)
     setShowModal(false)
-    setSchedule({
-      title: '',
-      start: dayjs().startOf('day'),
-      end: dayjs().endOf('day'),
+    setCalendar({
+      ...calendar,
+      schedule: {
+        title: '',
+        start: dayjs(calendar.selectedDate),
+        end: dayjs(calendar.selectedDate).endOf('day'),
+      },
     })
+  }
+
+  async function handleUpdateSpareTime(): Promise<void> {
+    const scheduleId = schedule._id
+    const event = {
+      title: schedule.title,
+      start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
+      end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
+    }
+    if (scheduleId) {
+      await updateSchedule(scheduleId, event)
+      setShowModal(false)
+    }
+  }
+
+  async function handleDeleteSpareTime(): Promise<void> {
+    const scheduleId = schedule._id
+    if (scheduleId) {
+      await deleteSchedule(scheduleId)
+      setShowModal(false)
+    }
   }
 
   function onChangeTime(name: string, selectTime: Dayjs | null) {
     if (selectTime) {
-      setSchedule({
-        ...schedule,
-        [name]: selectTime,
+      setCalendar({
+        ...calendar,
+        schedule: {
+          ...schedule,
+          [name]: selectTime,
+        },
       })
     }
   }
 
   function onChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
-    setSchedule({
-      ...schedule,
-      [name]: value,
+    setCalendar({
+      ...calendar,
+      schedule: {
+        ...schedule,
+        [name]: value,
+      },
     })
   }
 
   function onChangeCategory(event: SelectChangeEvent) {
-    setCategory(event.target.value)
+    setCalendar({
+      ...calendar,
+      category: event.target.value,
+    })
   }
 
   function onCloseModal() {
@@ -86,6 +117,7 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
 
   return {
     title,
+    mode,
     schedule,
     category,
     onCloseModal,
@@ -93,5 +125,7 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     onChangeTime,
     onChangeCategory,
     handleSubmitSpareTime,
+    handleUpdateSpareTime,
+    handleDeleteSpareTime,
   }
 }

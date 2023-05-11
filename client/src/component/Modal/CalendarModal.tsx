@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useCalendarModal } from '@/hooks/useCalendarModal'
-import { CATEGORIES, LANG } from '@/utils/constant'
+import { CATEGORIES, LANG, SCHEDULE_MODE } from '@/utils/constant'
 import { MenuItem, Select } from '@mui/material'
 import { useRecoilValue } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
@@ -51,6 +51,15 @@ const SubmitButton = styled.div`
   align-items: center;
 `
 
+const DeleteButton = styled.div`
+  height: 50px;
+  background-color: #ff6767;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const SubmitButtonText = styled.p`
   color: white;
   font-size: 15px;
@@ -74,6 +83,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
   const showModal = useRecoilValue<boolean>(calendarModalState)
   const {
     title,
+    mode,
     schedule,
     category,
     onCloseModal,
@@ -81,6 +91,8 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
     onChangeTime,
     onChangeCategory,
     handleSubmitSpareTime,
+    handleDeleteSpareTime,
+    handleUpdateSpareTime,
   } = useCalendarModal(calendarRef)
   return (
     <Modal
@@ -131,9 +143,20 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
                 onChange={(time) => onChangeTime('end', time)}
               />
             </TimeWrapper>
-            <SubmitButton onClick={handleSubmitSpareTime}>
-              <SubmitButtonText>저장</SubmitButtonText>
-            </SubmitButton>
+            {mode === SCHEDULE_MODE.MODIFY ? (
+              <>
+                <DeleteButton onClick={handleDeleteSpareTime}>
+                  <SubmitButtonText>삭제</SubmitButtonText>
+                </DeleteButton>
+                <SubmitButton onClick={handleUpdateSpareTime}>
+                  <SubmitButtonText>수정</SubmitButtonText>
+                </SubmitButton>
+              </>
+            ) : (
+              <SubmitButton onClick={handleSubmitSpareTime}>
+                <SubmitButtonText>생성</SubmitButtonText>
+              </SubmitButton>
+            )}
           </RowContainer>
         </LocalizationProvider>
       </Container>

@@ -1,17 +1,22 @@
-import {
-  createSchedules,
-  getSchedules,
-  getSchedulesRange,
-} from '@/services/schedules.service'
-import { CALENDAR_STATE } from '@/models/Calendar'
-import { useRecoilState } from 'recoil'
-import { EventInput } from '@fullcalendar/core'
-import { calendarState } from '@/state/calendar.state'
 import dayjs from 'dayjs'
 import React from 'react'
 import FullCalendar from '@fullcalendar/react'
+import {
+  createSchedules,
+  deleteSchedules,
+  getScheduleById,
+  getSchedules,
+  getSchedulesRange,
+  updateSchedules,
+} from '@/services/schedules.service'
+import { CALENDAR_STATE, SCHEDULE } from '@/models/Calendar'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { EventInput } from '@fullcalendar/core'
+import { calendarState } from '@/state/calendar.state'
+import { calendarModalState } from '@/state/modal.state'
 
 export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
+  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
   const fetchSchedule = async () => {
@@ -26,6 +31,15 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
         })
       }
     }
+  }
+
+  const fetchScheduleById = async (scheduleId: string) => {
+    const schedule = await getScheduleById<SCHEDULE>(scheduleId)
+    setCalendar({
+      ...calendar,
+      schedule,
+    })
+    setShowModal(true)
   }
 
   const fetchScheduleRange = async () => {
@@ -49,13 +63,26 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
   }
 
   const createSchedule = async (schedule: EventInput) => {
-    const res = await createSchedules(schedule)
-    if (res) {
-      await fetchSchedule()
-    } else {
-      alert(res)
-    }
+    await createSchedules(schedule)
+    await fetchSchedule()
   }
 
-  return { fetchSchedule, createSchedule, fetchScheduleRange }
+  const updateSchedule = async (scheduleId: string, schedule: EventInput) => {
+    await updateSchedules(scheduleId, schedule)
+    await fetchScheduleRange()
+  }
+
+  const deleteSchedule = async (scheduleId: string) => {
+    await deleteSchedules(scheduleId)
+    await fetchScheduleRange()
+  }
+
+  return {
+    fetchSchedule,
+    fetchScheduleById,
+    fetchScheduleRange,
+    createSchedule,
+    updateSchedule,
+    deleteSchedule,
+  }
 }

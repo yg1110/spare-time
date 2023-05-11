@@ -12,6 +12,10 @@ export const CALENDAR_VIEW_MODE = {
   DAY: 'timeGridDay',
   LIST: 'listWeek',
 }
+export const SCHEDULE_MODE = {
+  CREATE: 'create',
+  MODIFY: 'modify',
+}
 export const CATEGORY = {
   TODO: {
     key: 'todo',

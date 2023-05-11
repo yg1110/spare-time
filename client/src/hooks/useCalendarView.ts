@@ -1,11 +1,15 @@
+import React from 'react'
+import FullCalendar from '@fullcalendar/react'
 import { EventClickArg } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
 import { calendarState } from '@/state/calendar.state'
 import { DateClickArg } from '@fullcalendar/interaction'
 import { calendarModalState } from '@/state/modal.state'
 import { CALENDAR_STATE } from '@/models/Calendar'
+import { useCalendarAPI } from '@/hooks/useCalendarAPI'
 
-export function useCalendarView() {
+export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
+  const { fetchScheduleById } = useCalendarAPI(calendarRef)
   const [showModal, setShowModal] = useRecoilState<boolean>(calendarModalState)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
@@ -17,16 +21,9 @@ export function useCalendarView() {
     })
   }
 
-  function handleEventClick(clickInfo: EventClickArg) {
-    console.log(`clickInfo`, clickInfo)
-
-    if (
-      confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      )
-    ) {
-      // eventStore.deleteEvent(clickInfo.event.id)
-    }
+  const handleEventClick = async (clickInfo: EventClickArg) => {
+    const scheduleId = clickInfo.event.extendedProps._id
+    await fetchScheduleById(scheduleId)
   }
 
   return {

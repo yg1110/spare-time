@@ -26,7 +26,7 @@ interface Props {
 const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   const { calendarEvents, selectedMenu } =
     useRecoilValue<CALENDAR_STATE>(calendarState)
-  const { handleEventClick, handleDateSelect } = useCalendarView()
+  const { handleEventClick, handleDateSelect } = useCalendarView(calendarRef)
   return (
     <Container>
       <FullCalendar

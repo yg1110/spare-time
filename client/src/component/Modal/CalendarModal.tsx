@@ -131,7 +131,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <TimeLabel>시작 시간</TimeLabel>
               <TimePicker
                 defaultValue={dayjs().startOf('day')}
-                value={schedule.start}
+                value={dayjs(schedule.start)}
                 onChange={(time) => onChangeTime('start', time)}
               />
             </TimeWrapper>
@@ -139,7 +139,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <TimeLabel>종료 시간</TimeLabel>
               <TimePicker
                 defaultValue={dayjs().startOf('day')}
-                value={schedule.end}
+                value={dayjs(schedule.end)}
                 onChange={(time) => onChangeTime('end', time)}
               />
             </TimeWrapper>

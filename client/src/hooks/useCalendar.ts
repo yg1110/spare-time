@@ -27,7 +27,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.prev()
-      await fetchScheduleRange()
+      // await fetchScheduleRange()
       setCalendar({
         ...calendar,
         title: calendarApi?.view?.title ?? '',
@@ -39,7 +39,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.next()
-      await fetchScheduleRange()
+      // await fetchScheduleRange()
       setCalendar({
         ...calendar,
         title: calendarApi?.view?.title ?? '',

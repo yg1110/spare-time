@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import { EventClickArg } from '@fullcalendar/core'
 import { useRecoilState } from 'recoil'
@@ -9,7 +9,7 @@ import { CALENDAR_STATE } from '@/models/Calendar'
 import { useCalendarAPI } from '@/hooks/useCalendarAPI'
 
 export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
-  const { fetchScheduleById } = useCalendarAPI(calendarRef)
+  const { fetchScheduleById, fetchScheduleRange } = useCalendarAPI(calendarRef)
   const [showModal, setShowModal] = useRecoilState<boolean>(calendarModalState)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
@@ -25,6 +25,12 @@ export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
     const scheduleId = clickInfo.event.extendedProps._id
     await fetchScheduleById(scheduleId)
   }
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      fetchScheduleRange()
+    }
+  }, [calendar.title])
 
   return {
     showModal,

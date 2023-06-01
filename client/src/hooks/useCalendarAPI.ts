@@ -53,10 +53,12 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
         (prev, curr) => prev.concat(curr.schedules),
         []
       )
-      setCalendar({
-        ...calendar,
-        calendarEvents,
-      })
+      if (schedule) {
+        setCalendar({
+          ...calendar,
+          calendarEvents,
+        })
+      }
     }
   }
 

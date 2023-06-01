@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: yg1110/spare-time-mongo:0.0.1
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb:/data/db
+    container_name: spareTimeMongo
+    restart: always
+  client:
+    image: yg1110/spare-time-client:0.0.1
+    ports:
+      - "3000:3000"
+    container_name: spareTimeClient
+    restart: always
+  server:
+    image: yg1110/spare-time-server:0.0.1
+    ports:
+      - "8000:8000"
+    container_name: spareTimeServer
+    restart: always

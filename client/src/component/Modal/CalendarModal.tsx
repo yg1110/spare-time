@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import dayjs from 'dayjs'
 import Modal from './index'
 import FullCalendar from '@fullcalendar/react'
-import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
+import Diary from '@/component/Modal/Diary'
+import Schedule from '@/component/Modal/Schedule'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useCalendarModal } from '@/hooks/useCalendarModal'
-import { CATEGORIES, LANG, SCHEDULE_MODE } from '@/utils/constant'
+import { CATEGORIES, CATEGORY, LANG, SCHEDULE_MODE } from '@/utils/constant'
 import { MenuItem, Select } from '@mui/material'
 import { useRecoilValue } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
@@ -84,15 +85,14 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
   const {
     title,
     mode,
-    schedule,
+    calendar,
     category,
     onCloseModal,
     onChangeValue,
-    onChangeTime,
     onChangeCategory,
-    handleSubmitSpareTime,
-    handleDeleteSpareTime,
-    handleUpdateSpareTime,
+    onSubmit,
+    onDeleteSchedule,
+    onUpdateSchedule,
   } = useCalendarModal(calendarRef)
   return (
     <Modal
@@ -123,37 +123,28 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <TimeLabel>제목</TimeLabel>
               <Input
                 name="title"
-                value={schedule.title}
+                value={calendar.title}
                 onChange={onChangeValue}
               />
             </TimeWrapper>
-            <TimeWrapper>
-              <TimeLabel>시작 시간</TimeLabel>
-              <TimePicker
-                defaultValue={dayjs().startOf('day')}
-                value={dayjs(schedule.start)}
-                onChange={(time) => onChangeTime('start', time)}
-              />
-            </TimeWrapper>
-            <TimeWrapper>
-              <TimeLabel>종료 시간</TimeLabel>
-              <TimePicker
-                defaultValue={dayjs().startOf('day')}
-                value={dayjs(schedule.end)}
-                onChange={(time) => onChangeTime('end', time)}
-              />
-            </TimeWrapper>
+
+            {category === CATEGORY.DIARY.name && (
+              <Diary calendarRef={calendarRef} />
+            )}
+            {category === CATEGORY.SCHEDULE.name && (
+              <Schedule calendarRef={calendarRef} />
+            )}
             {mode === SCHEDULE_MODE.MODIFY ? (
               <>
-                <DeleteButton onClick={handleDeleteSpareTime}>
+                <DeleteButton onClick={onDeleteSchedule}>
                   <SubmitButtonText>삭제</SubmitButtonText>
                 </DeleteButton>
-                <SubmitButton onClick={handleUpdateSpareTime}>
+                <SubmitButton onClick={onUpdateSchedule}>
                   <SubmitButtonText>수정</SubmitButtonText>
                 </SubmitButton>
               </>
             ) : (
-              <SubmitButton onClick={handleSubmitSpareTime}>
+              <SubmitButton onClick={onSubmit}>
                 <SubmitButtonText>생성</SubmitButtonText>
               </SubmitButton>
             )}

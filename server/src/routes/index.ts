@@ -1,12 +1,11 @@
 import { Application } from 'express'
 import { initRoutesDate } from './date'
 import { initRoutesSchedule } from './schedule'
+import { initRoutesDiary } from './diary'
 
 export const initRoutes = (app: Application) => {
   initRoutesDate(app)
   initRoutesSchedule(app)
+  initRoutesDiary(app)
   // initRoutesTodo(app)
-  // initRoutesDiary(app)
-  // initRoutesTime(app)
-  // initRoutesSleep(app)
 }

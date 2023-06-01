@@ -29,15 +29,15 @@ const Title = styled.h1`
 
 const Calendar: React.FC = () => {
   const calendarRef = React.useRef<FullCalendar>(null)
-  const { calendar, handlePrev, handleNext } = useCalendar(calendarRef)
+  const { calendar, onPrev, onNext } = useCalendar(calendarRef)
 
   return (
     <Container>
       <Header>
         <Title>{calendar.title}</Title>
         <ButtonWrapper>
-          <ArrowBackIos onClick={handlePrev} />
-          <ArrowForwardIos onClick={handleNext} />
+          <ArrowBackIos onClick={onPrev} />
+          <ArrowForwardIos onClick={onNext} />
         </ButtonWrapper>
       </Header>
       <CalendarView calendarRef={calendarRef} />

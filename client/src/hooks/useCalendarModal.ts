@@ -5,17 +5,18 @@ import { SelectChangeEvent } from '@mui/material'
 import { CALENDAR_STATE } from '@/models/Calendar'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
-import { isValidDate } from '@/utils/helper'
+import { isValidDate, isValidValue } from '@/utils/helper'
 import { calendarState } from '@/state/calendar.state'
 import { useCalendarAPI } from '@/hooks/useCalendarAPI'
-import { SCHEDULE_MODE } from '@/utils/constant'
+import { CATEGORY, SCHEDULE_MODE } from '@/utils/constant'
+import { createDiaries } from '@/services/schedules.service'
 
 export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
   const { createSchedule, updateSchedule, deleteSchedule } =
     useCalendarAPI(calendarRef)
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
-  const { schedule, category } = calendar
+  const { schedule, diaries, category } = calendar
   const title = dayjs(calendar.selectedDate).format('YYYY년 MM월 DD일')
   const mode = schedule?._id ? SCHEDULE_MODE.MODIFY : SCHEDULE_MODE.CREATE
 
@@ -23,16 +24,19 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     if (calendar.selectedDate) {
       setCalendar({
         ...calendar,
+        title: '',
         schedule: {
-          title: '',
           start: dayjs(calendar.selectedDate),
           end: dayjs(calendar.selectedDate).endOf('day'),
+        },
+        diaries: {
+          content: '',
         },
       })
     }
   }, [calendar.selectedDate])
 
-  async function handleSubmitSpareTime(): Promise<void> {
+  async function onSubmitSchedule(): Promise<void> {
     const isValidStartDate = isValidDate(schedule.start)
     const isValidEndDate = isValidDate(schedule.end)
     if (!isValidStartDate) {
@@ -44,7 +48,7 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
       return
     }
     const event = {
-      title: schedule.title,
+      title: calendar.title,
       start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
       end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
     }
@@ -52,18 +56,18 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     setShowModal(false)
     setCalendar({
       ...calendar,
+      title: '',
       schedule: {
-        title: '',
         start: dayjs(calendar.selectedDate),
         end: dayjs(calendar.selectedDate).endOf('day'),
       },
     })
   }
 
-  async function handleUpdateSpareTime(): Promise<void> {
+  async function onUpdateSchedule(): Promise<void> {
     const scheduleId = schedule._id
     const event = {
-      title: schedule.title,
+      title: calendar.title,
       start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
       end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
     }
@@ -73,11 +77,46 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     }
   }
 
-  async function handleDeleteSpareTime(): Promise<void> {
+  async function onDeleteSchedule(): Promise<void> {
     const scheduleId = schedule._id
     if (scheduleId) {
       await deleteSchedule(scheduleId)
       setShowModal(false)
+    }
+  }
+
+  async function onSubmitDiaries(): Promise<void> {
+    const isValidTitle = isValidValue(calendar.title)
+    const isValidContent = isValidValue(diaries.content)
+    if (!isValidTitle) {
+      alert('제목을 입력해주세요')
+      return
+    }
+    if (!isValidContent) {
+      alert('내용을 입력해주세요')
+      return
+    }
+    const event = {
+      title: calendar.title,
+      content: diaries.content,
+    }
+    await createDiaries(event)
+    setShowModal(false)
+    setCalendar({
+      ...calendar,
+      title: '',
+      diaries: {
+        content: '',
+      },
+    })
+  }
+
+  function onSubmit() {
+    switch (category) {
+      case CATEGORY.DIARY.name:
+        return onSubmitDiaries()
+      case CATEGORY.SCHEDULE.name:
+        return onSubmitSchedule()
     }
   }
 
@@ -97,8 +136,27 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
     const { name, value } = event.target
     setCalendar({
       ...calendar,
+      [name]: value,
+    })
+  }
+
+  function onChangeScheduleValue(event: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target
+    setCalendar({
+      ...calendar,
       schedule: {
         ...schedule,
+        [name]: value,
+      },
+    })
+  }
+
+  function onChangeDiaries(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const { name, value } = event.target
+    setCalendar({
+      ...calendar,
+      diaries: {
+        ...diaries,
         [name]: value,
       },
     })
@@ -118,14 +176,18 @@ export function useCalendarModal(calendarRef: React.RefObject<FullCalendar>) {
   return {
     title,
     mode,
+    calendar,
     schedule,
+    diaries,
     category,
     onCloseModal,
-    onChangeValue,
     onChangeTime,
+    onChangeValue,
     onChangeCategory,
-    handleSubmitSpareTime,
-    handleUpdateSpareTime,
-    handleDeleteSpareTime,
+    onChangeDiaries,
+    onChangeScheduleValue,
+    onSubmit,
+    onUpdateSchedule,
+    onDeleteSchedule,
   }
 }

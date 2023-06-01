@@ -77,6 +77,11 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     await fetchScheduleRange()
   }
 
+  const createDiaries = async (diaries: EventInput) => {
+    await createDiaries(diaries)
+    await fetchSchedule()
+  }
+
   return {
     fetchSchedule,
     fetchScheduleById,
@@ -84,5 +89,6 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     createSchedule,
     updateSchedule,
     deleteSchedule,
+    createDiaries,
   }
 }

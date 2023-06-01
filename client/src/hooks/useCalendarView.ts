@@ -13,7 +13,7 @@ export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
   const [showModal, setShowModal] = useRecoilState<boolean>(calendarModalState)
   const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
 
-  const handleDateSelect = (arg: DateClickArg) => {
+  const onDateSelect = (arg: DateClickArg) => {
     setShowModal(true)
     setCalendar({
       ...calendar,
@@ -21,7 +21,7 @@ export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
     })
   }
 
-  const handleEventClick = async (clickInfo: EventClickArg) => {
+  const onEventClick = async (clickInfo: EventClickArg) => {
     const scheduleId = clickInfo.event.extendedProps._id
     await fetchScheduleById(scheduleId)
   }
@@ -29,7 +29,7 @@ export function useCalendarView(calendarRef: React.RefObject<FullCalendar>) {
   return {
     showModal,
     calendar,
-    handleEventClick,
-    handleDateSelect,
+    onEventClick,
+    onDateSelect,
   }
 }

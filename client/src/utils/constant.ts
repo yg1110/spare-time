@@ -29,14 +29,6 @@ export const CATEGORY = {
     key: 'schedule',
     name: '스케쥴',
   },
-  TIME: {
-    key: 'time',
-    name: '집중시간/낭비시간',
-  },
-  SLEEP_HOUR: {
-    key: 'sleepHour',
-    name: '수면시간',
-  },
 }
 
 export const CATEGORIES = Object.values(CATEGORY)

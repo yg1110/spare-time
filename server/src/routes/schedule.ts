@@ -134,7 +134,7 @@ async function deleteSchedules(req: Request, res: Response) {
     return res.status(201).json(query)
   } catch (error) {
     console.error('Error delete schedules', error)
-    return res.status(500).json({ error: 'Error delte schedules' })
+    return res.status(500).json({ error: 'Error delete schedules' })
   }
 }
 

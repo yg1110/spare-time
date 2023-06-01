@@ -26,7 +26,7 @@ interface Props {
 const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   const { calendarEvents, selectedMenu } =
     useRecoilValue<CALENDAR_STATE>(calendarState)
-  const { handleEventClick, handleDateSelect } = useCalendarView(calendarRef)
+  const { onEventClick, onDateSelect } = useCalendarView(calendarRef)
   return (
     <Container>
       <FullCalendar
@@ -37,8 +37,8 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
         dayMaxEvents={true}
         events={calendarEvents}
         initialView={selectedMenu}
-        eventClick={handleEventClick}
-        dateClick={handleDateSelect}
+        eventClick={onEventClick}
+        dateClick={onDateSelect}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
       />
     </Container>

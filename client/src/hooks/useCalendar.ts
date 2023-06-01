@@ -23,7 +23,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     }
   }, [calendarRef.current])
 
-  const handlePrev = async () => {
+  const onPrev = async () => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.prev()
@@ -35,7 +35,7 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     }
   }
 
-  const handleNext = async () => {
+  const onNext = async () => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.next()
@@ -47,5 +47,5 @@ export function useCalendar(calendarRef: React.RefObject<FullCalendar>) {
     }
   }
 
-  return { calendar, handlePrev, handleNext }
+  return { calendar, onPrev, onNext }
 }

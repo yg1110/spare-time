@@ -5,20 +5,30 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction'
 import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth'
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek'
 import WebAssetIcon from '@mui/icons-material/WebAsset'
-import FullCalendar from '@fullcalendar/react'
 import { CALENDAR_VIEW_MODE, MENUS } from '@/utils/constant'
-import { useNav } from '@/hooks/useNav'
+import { useRecoilState } from 'recoil'
+import { selectedMenuState } from '@/state/calendar.state'
 
 interface Props {
-  calendarRef: React.RefObject<FullCalendar>
+  changeView: (view: string) => void
 }
 
-const Nav: React.FC<Props> = ({ calendarRef }) => {
-  const { selectedMenu, onChangeMenu } = useNav(calendarRef)
+const Nav: React.FC<Props> = ({ changeView }) => {
+  const [selectedMenu, setSelectedMenu] =
+    useRecoilState<string>(selectedMenuState)
+
+  const onChangeMenu = (
+    event: React.SyntheticEvent,
+    selectView: keyof typeof CALENDAR_VIEW_MODE
+  ) => {
+    changeView(selectView)
+    setSelectedMenu(selectView)
+  }
+
+  console.log(`Nav`)
   return (
     <Box>
       <BottomNavigation showLabels value={selectedMenu} onChange={onChangeMenu}>
-        {/*<BottomNavigationAction label={MENUS.TODAY} icon={<TodayIcon />} />*/}
         <BottomNavigationAction
           label={MENUS.MONTH}
           value={CALENDAR_VIEW_MODE.MONTH}
@@ -34,12 +44,6 @@ const Nav: React.FC<Props> = ({ calendarRef }) => {
           value={CALENDAR_VIEW_MODE.DAY}
           icon={<WebAssetIcon />}
         />
-        {/*<BottomNavigationAction*/}
-        {/*  href={'/add'}*/}
-        {/*  component={Link}*/}
-        {/*  label={MENUS.ADD}*/}
-        {/*  icon={<AddIcon />}*/}
-        {/*></BottomNavigationAction>*/}
       </BottomNavigation>
     </Box>
   )

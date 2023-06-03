@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import Modal from './index'
 import FullCalendar from '@fullcalendar/react'
@@ -6,11 +6,11 @@ import Diary from '@/component/Modal/Diary'
 import Schedule from '@/component/Modal/Schedule'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useCalendarModal } from '@/hooks/useCalendarModal'
-import { CATEGORIES, CATEGORY, LANG, SCHEDULE_MODE } from '@/utils/constant'
-import { MenuItem, Select } from '@mui/material'
-import { useRecoilValue } from 'recoil'
+import { CATEGORIES, CATEGORY, LANG } from '@/utils/constant'
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
+import { calendarTitleState } from '@/state/calendar.state'
 
 const Container = styled.div`
   width: 100%;
@@ -43,57 +43,26 @@ const TimeLabel = styled.label`
   font-size: 18px;
 `
 
-const SubmitButton = styled.div`
-  height: 50px;
-  background-color: #6a92fe;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const DeleteButton = styled.div`
-  height: 50px;
-  background-color: #ff6767;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const SubmitButtonText = styled.p`
-  color: white;
-  font-size: 15px;
-  font-weight: 600;
-`
-
-const Input = styled.input`
-  width: 100%;
-  height: 54px;
-  font-size: 18px;
-  padding: 16.5px 14px;
-  border-radius: 5px;
-  border: #ddd 1px solid;
-`
-
 interface Props {
   calendarRef: React.RefObject<FullCalendar>
 }
 
 const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
+  const [category, setCategory] = useState<string>(CATEGORY.SCHEDULE.name)
+  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
+  const headerTitle = useRecoilValue<string>(calendarTitleState)
   const showModal = useRecoilValue<boolean>(calendarModalState)
-  const {
-    title,
-    mode,
-    calendar,
-    category,
-    onCloseModal,
-    onChangeValue,
-    onChangeCategory,
-    onSubmit,
-    onDeleteSchedule,
-    onUpdateSchedule,
-  } = useCalendarModal(calendarRef)
+
+  function onChangeCategory(event: SelectChangeEvent) {
+    setCategory(event.target.value)
+  }
+
+  function onCloseModal() {
+    setShowModal(false)
+  }
+
+  console.log(`calendarModal`)
+
   return (
     <Modal
       visible={showModal}
@@ -102,7 +71,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
       height={'100vh'}
     >
       <Container>
-        <Title>{title}</Title>
+        <Title>{headerTitle}</Title>
         <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
           <RowContainer>
             <TimeWrapper>
@@ -119,34 +88,11 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
                 ))}
               </Select>
             </TimeWrapper>
-            <TimeWrapper>
-              <TimeLabel>제목</TimeLabel>
-              <Input
-                name="title"
-                value={calendar.title}
-                onChange={onChangeValue}
-              />
-            </TimeWrapper>
-
             {category === CATEGORY.DIARY.name && (
-              <Diary calendarRef={calendarRef} />
+              <Diary setShowModal={setShowModal} />
             )}
             {category === CATEGORY.SCHEDULE.name && (
-              <Schedule calendarRef={calendarRef} />
-            )}
-            {mode === SCHEDULE_MODE.MODIFY ? (
-              <>
-                <DeleteButton onClick={onDeleteSchedule}>
-                  <SubmitButtonText>삭제</SubmitButtonText>
-                </DeleteButton>
-                <SubmitButton onClick={onUpdateSchedule}>
-                  <SubmitButtonText>수정</SubmitButtonText>
-                </SubmitButton>
-              </>
-            ) : (
-              <SubmitButton onClick={onSubmit}>
-                <SubmitButtonText>생성</SubmitButtonText>
-              </SubmitButton>
+              <Schedule calendarRef={calendarRef} setShowModal={setShowModal} />
             )}
           </RowContainer>
         </LocalizationProvider>

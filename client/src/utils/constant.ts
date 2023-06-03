@@ -12,7 +12,7 @@ export const CALENDAR_VIEW_MODE = {
   DAY: 'timeGridDay',
   LIST: 'listWeek',
 }
-export const SCHEDULE_MODE = {
+export const MODAL_MODE = {
   CREATE: 'create',
   MODIFY: 'modify',
 }

@@ -1,8 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { TextareaAutosize } from '@mui/material'
-import FullCalendar from '@fullcalendar/react'
-import { useCalendarModal } from '@/hooks/useCalendarModal'
+import { DIARY } from '@/types/Calendar'
+import { useRecoilState } from 'recoil'
+import { diaryState } from '@/state/calendar.state'
+import { MODAL_MODE } from '@/utils/constant'
+import { isValidValue } from '@/utils/helper'
+import { createDiaries } from '@/services/schedules.service'
 
 const TimeWrapper = styled.div`
   display: flex;
@@ -43,24 +47,111 @@ const DiaryInput = styled(TextareaAutosize)`
   }
 `
 
+const Input = styled.input`
+  width: 100%;
+  height: 54px;
+  font-size: 18px;
+  padding: 16.5px 14px;
+  border-radius: 5px;
+  border: #ddd 1px solid;
+`
+
+const SubmitButton = styled.div`
+  height: 50px;
+  background-color: #6a92fe;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const DeleteButton = styled.div`
+  height: 50px;
+  background-color: #ff6767;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const SubmitButtonText = styled.p`
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+`
+
 interface Props {
-  calendarRef: React.RefObject<FullCalendar>
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Diary: React.FC<Props> = ({ calendarRef }) => {
-  const { diaries, onChangeDiaries } = useCalendarModal(calendarRef)
+const Diary: React.FC<Props> = ({ setShowModal }) => {
+  const [diary, setDiary] = useRecoilState<DIARY>(diaryState)
+  const mode = diary?._id ? MODAL_MODE.MODIFY : MODAL_MODE.CREATE
+
+  function onChangeValue(
+    event:
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLInputElement>
+  ) {
+    const { name, value } = event.target
+    setDiary({
+      ...diary,
+      [name]: value,
+    })
+  }
+
+  async function onSubmit(): Promise<void> {
+    const isValidTitle = isValidValue(diary.title)
+    const isValidContent = isValidValue(diary.content)
+    if (!isValidTitle) {
+      alert('제목을 입력해주세요')
+      return
+    }
+    if (!isValidContent) {
+      alert('내용을 입력해주세요')
+      return
+    }
+    await createDiaries(diary)
+    setShowModal(false)
+    setDiary({
+      title: '',
+      content: '',
+    })
+  }
+
+  console.log(`Diary`)
 
   return (
-    <TimeWrapper>
-      <TimeLabel>내용</TimeLabel>
-      <DiaryInput
-        maxRows={8}
-        name="content"
-        placeholder="일기 내용"
-        onChange={onChangeDiaries}
-        value={diaries.content}
-      />
-    </TimeWrapper>
+    <>
+      <TimeWrapper>
+        <TimeLabel>제목</TimeLabel>
+        <Input name="title" value={diary.title} onChange={onChangeValue} />
+      </TimeWrapper>
+      <TimeWrapper>
+        <TimeLabel>내용</TimeLabel>
+        <DiaryInput
+          maxRows={8}
+          name="content"
+          placeholder="일기 내용"
+          onChange={onChangeValue}
+          value={diary.content}
+        />
+      </TimeWrapper>
+      {mode === MODAL_MODE.MODIFY ? (
+        <>
+          {/*<DeleteButton onClick={onDeleteSchedule}>*/}
+          {/*  <SubmitButtonText>삭제</SubmitButtonText>*/}
+          {/*</DeleteButton>*/}
+          {/*<SubmitButton onClick={onUpdateSchedule}>*/}
+          {/*  <SubmitButtonText>수정</SubmitButtonText>*/}
+          {/*</SubmitButton>*/}
+        </>
+      ) : (
+        <SubmitButton onClick={onSubmit}>
+          <SubmitButtonText>생성</SubmitButtonText>
+        </SubmitButton>
+      )}
+    </>
   )
 }
 

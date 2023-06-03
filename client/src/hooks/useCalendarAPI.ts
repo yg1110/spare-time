@@ -9,15 +9,16 @@ import {
   getSchedulesRange,
   updateSchedules,
 } from '@/services/schedules.service'
-import { CALENDAR_STATE, SCHEDULE } from '@/models/Calendar'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { SCHEDULE } from '@/types/Calendar'
+import { useSetRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
-import { calendarState } from '@/state/calendar.state'
+import { calendarEventState, scheduleState } from '@/state/calendar.state'
 import { calendarModalState } from '@/state/modal.state'
 
 export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
-  const [calendar, setCalendar] = useRecoilState<CALENDAR_STATE>(calendarState)
+  const setSchedule = useSetRecoilState<SCHEDULE>(scheduleState)
+  const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
 
   const fetchSchedule = async () => {
     const calendarApi = calendarRef.current?.getApi()
@@ -25,20 +26,14 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
       const date = dayjs(calendarApi.getDate()).format('YYYY-MM-DD')
       const schedule = await getSchedules<EventInput[]>(date)
       if (schedule && schedule.length > 0) {
-        setCalendar({
-          ...calendar,
-          calendarEvents: schedule,
-        })
+        setCalendarEvent(schedule)
       }
     }
   }
 
   const fetchScheduleById = async (scheduleId: string) => {
-    const schedule = await getScheduleById<SCHEDULE>(scheduleId)
-    setCalendar({
-      ...calendar,
-      schedule,
-    })
+    const updateSchedule = await getScheduleById<SCHEDULE>(scheduleId)
+    setSchedule(updateSchedule)
     setShowModal(true)
   }
 
@@ -52,12 +47,9 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
       const calendarEvents = schedule.reduce(
         (prev, curr) => prev.concat(curr.schedules),
         []
-      )
+      ) as EventInput[]
       if (schedule) {
-        setCalendar({
-          ...calendar,
-          calendarEvents,
-        })
+        setCalendarEvent(calendarEvents)
       }
     }
   }

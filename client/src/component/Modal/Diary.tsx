@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil'
 import { diaryState } from '@/state/calendar.state'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidValue } from '@/utils/helper'
-import { createDiaries } from '@/services/schedules.service'
+import { createDiaries } from '@/services/diaries.service'
 
 const TimeWrapper = styled.div`
   display: flex;

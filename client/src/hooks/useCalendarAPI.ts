@@ -6,14 +6,14 @@ import {
   deleteSchedules,
   getScheduleById,
   getSchedules,
-  getSchedulesRange,
   updateSchedules,
 } from '@/services/schedules.service'
-import { SCHEDULE } from '@/types/Calendar'
+import { DATES, SCHEDULE } from '@/types/Calendar'
 import { useSetRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
 import { calendarEventState, scheduleState } from '@/state/calendar.state'
 import { calendarModalState } from '@/state/modal.state'
+import { getDateRange } from '@/services/date.service'
 
 export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
@@ -43,12 +43,13 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
       const { currentStart, currentEnd } = calendarApi.view
       const startDate = dayjs(currentStart).format('YYYY-MM-DD')
       const endDate = dayjs(currentEnd).format('YYYY-MM-DD')
-      const schedule = await getSchedulesRange<EventInput[]>(startDate, endDate)
-      const calendarEvents = schedule.reduce(
-        (prev, curr) => prev.concat(curr.schedules),
+      const dates = await getDateRange<DATES[]>(startDate, endDate)
+      const calendarEvents = dates.reduce(
+        (events: EventInput[], date: DATES) =>
+          events.concat([...date.schedules, ...date.diaries]),
         []
       ) as EventInput[]
-      if (schedule) {
+      if (calendarEvents) {
         setCalendarEvent(calendarEvents)
       }
     }

@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import FullCalendar from '@fullcalendar/react'
-import CalendarHeader from '@/component/Header'
 import CalendarView from '@/component/CalendarView'
 import CalendarModal from '@/component/Modal/CalendarModal'
 import Nav from '@/component/Nav'
+import FullCalendar from '@fullcalendar/react'
 
 const Container = styled.div`
   display: flex;
@@ -13,9 +12,11 @@ const Container = styled.div`
   width: 100%;
 `
 
-const Calendar: React.FC = () => {
-  const calendarRef = React.useRef<FullCalendar>(null)
+interface Props {
+  calendarRef: React.RefObject<FullCalendar>
+}
 
+const Calendar: React.FC<Props> = ({ calendarRef }) => {
   const changeView = (view: string) => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
@@ -25,7 +26,7 @@ const Calendar: React.FC = () => {
 
   return (
     <Container>
-      <CalendarHeader calendarRef={calendarRef} />
+      {/*<CalendarHeader calendarRef={calendarRef} />*/}
       <CalendarView calendarRef={calendarRef} />
       <CalendarModal calendarRef={calendarRef} />
       <Nav changeView={changeView} />

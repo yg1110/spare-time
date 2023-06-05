@@ -9,8 +9,8 @@ import { useCalendarAPI } from '@/hooks/useCalendarAPI'
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
   height: 56px;
+  width: 100%;
   align-items: center;
   text-align: center;
 `

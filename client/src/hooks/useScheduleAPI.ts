@@ -6,17 +6,15 @@ import {
   deleteSchedules,
   getScheduleById,
   getSchedules,
+  getSchedulesRange,
   updateSchedules,
 } from '@/services/schedules.service'
 import { DATES, SCHEDULE } from '@/types/Calendar'
 import { useSetRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
 import { calendarEventState, scheduleState } from '@/state/calendar.state'
-import { calendarModalState } from '@/state/modal.state'
-import { getDateRange } from '@/services/date.service'
 
-export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
-  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
+export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setSchedule = useSetRecoilState<SCHEDULE>(scheduleState)
   const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
 
@@ -32,9 +30,8 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
   }
 
   const fetchScheduleById = async (scheduleId: string) => {
-    const updateSchedule = await getScheduleById<SCHEDULE>(scheduleId)
-    setSchedule(updateSchedule)
-    setShowModal(true)
+    const schedule = await getScheduleById<SCHEDULE>(scheduleId)
+    setSchedule(schedule)
   }
 
   const fetchScheduleRange = async () => {
@@ -43,10 +40,9 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
       const { currentStart, currentEnd } = calendarApi.view
       const startDate = dayjs(currentStart).format('YYYY-MM-DD')
       const endDate = dayjs(currentEnd).format('YYYY-MM-DD')
-      const dates = await getDateRange<DATES[]>(startDate, endDate)
+      const dates = await getSchedulesRange<DATES[]>(startDate, endDate)
       const calendarEvents = dates.reduce(
-        (events: EventInput[], date: DATES) =>
-          events.concat([...date.schedules, ...date.diaries]),
+        (events: EventInput[], date: DATES) => events.concat(date.schedules),
         []
       ) as EventInput[]
       if (calendarEvents) {
@@ -57,7 +53,7 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
 
   const createSchedule = async (schedule: EventInput) => {
     await createSchedules(schedule)
-    await fetchSchedule()
+    await fetchScheduleRange()
   }
 
   const updateSchedule = async (scheduleId: string, schedule: EventInput) => {
@@ -70,11 +66,6 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     await fetchScheduleRange()
   }
 
-  const createDiaries = async (diaries: EventInput) => {
-    await createDiaries(diaries)
-    await fetchSchedule()
-  }
-
   return {
     fetchSchedule,
     fetchScheduleById,
@@ -82,6 +73,5 @@ export function useCalendarAPI(calendarRef: React.RefObject<FullCalendar>) {
     createSchedule,
     updateSchedule,
     deleteSchedule,
-    createDiaries,
   }
 }

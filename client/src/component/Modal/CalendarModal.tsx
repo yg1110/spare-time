@@ -1,16 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Modal from './index'
 import FullCalendar from '@fullcalendar/react'
 import Diary from '@/component/Modal/Diary'
 import Schedule from '@/component/Modal/Schedule'
+import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { CATEGORIES, CATEGORY, LANG } from '@/utils/constant'
-import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { LANG, SIDE_MENU_TYPE } from '@/utils/constant'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
-import { calendarTitleState } from '@/state/calendar.state'
+import {
+  diaryState,
+  scheduleState,
+  selectedDateState,
+} from '@/state/calendar.state'
+import { DIARY, SCHEDULE } from '@/types/Calendar'
+import { sideMenuState } from '@/state/menu.state'
 
 const Container = styled.div`
   width: 100%;
@@ -33,35 +39,37 @@ const Title = styled.h1`
   font-weight: bold;
 `
 
-const TimeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-`
-
-const TimeLabel = styled.label`
-  font-size: 18px;
-`
-
 interface Props {
   calendarRef: React.RefObject<FullCalendar>
 }
 
 const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
-  const [category, setCategory] = useState<string>(CATEGORY.SCHEDULE.name)
-  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
-  const headerTitle = useRecoilValue<string>(calendarTitleState)
+  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
   const showModal = useRecoilValue<boolean>(calendarModalState)
+  const sideMenu = useRecoilValue(sideMenuState)
+  const setShowModal = useSetRecoilState<boolean>(calendarModalState)
+  const setSchedule = useSetRecoilState<SCHEDULE>(scheduleState)
+  const setDiary = useSetRecoilState<DIARY>(diaryState)
 
-  function onChangeCategory(event: SelectChangeEvent) {
-    setCategory(event.target.value)
+  const initSchedule = {
+    title: '',
+    start: dayjs(selectedDate).startOf('day'),
+    end: dayjs(selectedDate).endOf('day'),
   }
+
+  const initDiary = {
+    title: '',
+    content: '',
+  }
+
+  useEffect(() => {
+    setSchedule(initSchedule)
+    setDiary(initDiary)
+  }, [selectedDate])
 
   function onCloseModal() {
     setShowModal(false)
   }
-
-  console.log(`calendarModal`)
 
   return (
     <Modal
@@ -71,27 +79,13 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
       height={'100vh'}
     >
       <Container>
-        <Title>{headerTitle}</Title>
+        <Title>{dayjs(selectedDate).format('YYYY-MM-DD')}</Title>
         <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
           <RowContainer>
-            <TimeWrapper>
-              <TimeLabel>카테고리</TimeLabel>
-              <Select
-                id="category-select"
-                value={category}
-                onChange={onChangeCategory}
-              >
-                {CATEGORIES.map((item) => (
-                  <MenuItem key={item.key} value={item.name}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </TimeWrapper>
-            {category === CATEGORY.DIARY.name && (
-              <Diary setShowModal={setShowModal} />
+            {sideMenu === SIDE_MENU_TYPE.DIARY && (
+              <Diary calendarRef={calendarRef} setShowModal={setShowModal} />
             )}
-            {category === CATEGORY.SCHEDULE.name && (
+            {sideMenu === SIDE_MENU_TYPE.SCHEDULE && (
               <Schedule calendarRef={calendarRef} setShowModal={setShowModal} />
             )}
           </RowContainer>

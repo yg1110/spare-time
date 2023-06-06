@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { TextareaAutosize } from '@mui/material'
 import { DIARY } from '@/types/Calendar'
-import { useRecoilState } from 'recoil'
-import { diaryState } from '@/state/calendar.state'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { diaryState, selectedDateState } from '@/state/calendar.state'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidValue } from '@/utils/helper'
-import { createDiaries } from '@/services/diaries.service'
+import { useDiaryAPI } from '@/hooks/useDiaryAPI'
+import FullCalendar from '@fullcalendar/react'
 
 const TimeWrapper = styled.div`
   display: flex;
@@ -81,11 +82,14 @@ const SubmitButtonText = styled.p`
 `
 
 interface Props {
+  calendarRef: React.RefObject<FullCalendar>
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Diary: React.FC<Props> = ({ setShowModal }) => {
+const Diary: React.FC<Props> = ({ calendarRef, setShowModal }) => {
+  const { createDiary, updateDiary, deleteDiary } = useDiaryAPI(calendarRef)
   const [diary, setDiary] = useRecoilState<DIARY>(diaryState)
+  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
   const mode = diary?._id ? MODAL_MODE.MODIFY : MODAL_MODE.CREATE
 
   function onChangeValue(
@@ -100,6 +104,26 @@ const Diary: React.FC<Props> = ({ setShowModal }) => {
     })
   }
 
+  async function onUpdateDiary(): Promise<void> {
+    const diaryId = diary._id
+    const event = {
+      title: diary.title,
+      content: diary.content,
+    }
+    if (diaryId) {
+      await updateDiary(diaryId, event)
+    }
+    setShowModal(false)
+  }
+
+  async function onDeleteDiary(): Promise<void> {
+    const diaryId = diary._id
+    if (diaryId) {
+      await deleteDiary(diaryId)
+    }
+    setShowModal(false)
+  }
+
   async function onSubmit(): Promise<void> {
     const isValidTitle = isValidValue(diary.title)
     const isValidContent = isValidValue(diary.content)
@@ -111,7 +135,11 @@ const Diary: React.FC<Props> = ({ setShowModal }) => {
       alert('내용을 입력해주세요')
       return
     }
-    await createDiaries(diary)
+    const body = {
+      ...diary,
+      date: selectedDate,
+    }
+    await createDiary(body)
     setShowModal(false)
     setDiary({
       title: '',
@@ -119,13 +147,16 @@ const Diary: React.FC<Props> = ({ setShowModal }) => {
     })
   }
 
-  console.log(`Diary`)
-
   return (
     <>
       <TimeWrapper>
         <TimeLabel>제목</TimeLabel>
-        <Input name="title" value={diary.title} onChange={onChangeValue} />
+        <Input
+          name="title"
+          placeholder="일기 제목"
+          value={diary.title}
+          onChange={onChangeValue}
+        />
       </TimeWrapper>
       <TimeWrapper>
         <TimeLabel>내용</TimeLabel>
@@ -139,12 +170,12 @@ const Diary: React.FC<Props> = ({ setShowModal }) => {
       </TimeWrapper>
       {mode === MODAL_MODE.MODIFY ? (
         <>
-          {/*<DeleteButton onClick={onDeleteSchedule}>*/}
-          {/*  <SubmitButtonText>삭제</SubmitButtonText>*/}
-          {/*</DeleteButton>*/}
-          {/*<SubmitButton onClick={onUpdateSchedule}>*/}
-          {/*  <SubmitButtonText>수정</SubmitButtonText>*/}
-          {/*</SubmitButton>*/}
+          <DeleteButton onClick={onDeleteDiary}>
+            <SubmitButtonText>삭제</SubmitButtonText>
+          </DeleteButton>
+          <SubmitButton onClick={onUpdateDiary}>
+            <SubmitButtonText>수정</SubmitButtonText>
+          </SubmitButton>
         </>
       ) : (
         <SubmitButton onClick={onSubmit}>

@@ -26,7 +26,6 @@ const Calendar: React.FC<Props> = ({ calendarRef }) => {
 
   return (
     <Container>
-      {/*<CalendarHeader calendarRef={calendarRef} />*/}
       <CalendarView calendarRef={calendarRef} />
       <CalendarModal calendarRef={calendarRef} />
       <Nav changeView={changeView} />
@@ -34,4 +33,4 @@ const Calendar: React.FC<Props> = ({ calendarRef }) => {
   )
 }
 
-export default Calendar
+export default React.memo(Calendar)

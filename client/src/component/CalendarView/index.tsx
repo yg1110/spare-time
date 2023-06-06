@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
-import { LANG } from '@/utils/constant'
+import { LANG, SIDE_MENU_TYPE } from '@/utils/constant'
 import {
   calendarEventState,
   calendarTitleState,
@@ -12,9 +12,11 @@ import {
   selectedMenuState,
 } from '@/state/calendar.state'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { useCalendarAPI } from '@/hooks/useCalendarAPI'
+import { useScheduleAPI } from '@/hooks/useScheduleAPI'
 import { calendarModalState } from '@/state/modal.state'
 import { EventClickArg, EventInput } from '@fullcalendar/core'
+import { sideMenuState } from '@/state/menu.state'
+import { useDiaryAPI } from '@/hooks/useDiaryAPI'
 
 const Container = styled.div`
   display: flex;
@@ -30,12 +32,15 @@ interface Props {
 }
 
 const CalendarView: React.FC<Props> = ({ calendarRef }) => {
-  const { fetchScheduleById } = useCalendarAPI(calendarRef)
+  const { fetchScheduleById } = useScheduleAPI(calendarRef)
+  const { fetchDiaryById } = useDiaryAPI(calendarRef)
   const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)
   const calendarEvent = useRecoilValue<EventInput[]>(calendarEventState)
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
   const [title, setTitle] = useRecoilState<string>(calendarTitleState)
   const selectedMenu = useRecoilValue<string>(selectedMenuState)
+
+  const sideMenu = useRecoilValue(sideMenuState)
 
   const onDateSelect = (arg: DateClickArg) => {
     setShowModal(true)
@@ -43,8 +48,19 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   }
 
   const onEventClick = async (clickInfo: EventClickArg) => {
-    const scheduleId = clickInfo.event.extendedProps._id
-    await fetchScheduleById(scheduleId)
+    if (sideMenu === SIDE_MENU_TYPE.SCHEDULE) {
+      const scheduleId = clickInfo.event.extendedProps._id
+      if (scheduleId) {
+        await fetchScheduleById(scheduleId)
+      }
+    }
+    if (sideMenu === SIDE_MENU_TYPE.DIARY) {
+      const diaryId = clickInfo.event.extendedProps._id
+      if (diaryId) {
+        await fetchDiaryById(diaryId)
+      }
+    }
+    setShowModal(true)
   }
 
   useEffect(() => {
@@ -54,7 +70,6 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
     }
   }, [calendarRef.current])
 
-  console.log(`calendarView`)
   return (
     <Container>
       <FullCalendar

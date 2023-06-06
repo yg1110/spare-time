@@ -1,14 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
+import FullCalendar from '@fullcalendar/react'
 import dayjs, { Dayjs } from 'dayjs'
 import { TimePicker } from '@mui/x-date-pickers'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidDate } from '@/utils/helper'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { SCHEDULE } from '@/types/Calendar'
-import { scheduleState } from '@/state/calendar.state'
-import { useCalendarAPI } from '@/hooks/useCalendarAPI'
-import FullCalendar from '@fullcalendar/react'
+import { scheduleState, selectedDateState } from '@/state/calendar.state'
+import { useScheduleAPI } from '@/hooks/useScheduleAPI'
 
 const TimeWrapper = styled.div`
   display: flex;
@@ -60,8 +60,9 @@ interface Props {
 
 const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
   const { createSchedule, updateSchedule, deleteSchedule } =
-    useCalendarAPI(calendarRef)
+    useScheduleAPI(calendarRef)
   const [schedule, setSchedule] = useRecoilState<SCHEDULE>(scheduleState)
+  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
   const mode = schedule?._id ? MODAL_MODE.MODIFY : MODAL_MODE.CREATE
 
   function onChangeValue(
@@ -94,8 +95,8 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
     }
     if (scheduleId) {
       await updateSchedule(scheduleId, event)
-      setShowModal(false)
     }
+    setShowModal(false)
   }
 
   async function onDeleteSchedule(): Promise<void> {
@@ -118,6 +119,7 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
       return
     }
     const event = {
+      date: dayjs(selectedDate).format('YYYY-MM-DD'),
       title: schedule.title,
       start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
       end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
@@ -126,13 +128,16 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
     setShowModal(false)
   }
 
-  console.log(`schedule`)
-
   return (
     <>
       <TimeWrapper>
         <TimeLabel>제목</TimeLabel>
-        <Input name="title" value={schedule.title} onChange={onChangeValue} />
+        <Input
+          name="title"
+          placeholder="일정 제목"
+          value={schedule.title}
+          onChange={onChangeValue}
+        />
       </TimeWrapper>
       <TimeWrapper>
         <TimeLabel>시작 시간</TimeLabel>

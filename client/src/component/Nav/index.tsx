@@ -25,7 +25,6 @@ const Nav: React.FC<Props> = ({ changeView }) => {
     setSelectedMenu(selectView)
   }
 
-  console.log(`Nav`)
   return (
     <Box>
       <BottomNavigation showLabels value={selectedMenu} onChange={onChangeMenu}>

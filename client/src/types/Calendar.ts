@@ -2,6 +2,7 @@ import { Dayjs } from 'dayjs'
 
 export interface DATES {
   _id?: string
+  date: string
   schedules: SCHEDULE[]
   diaries: DIARY[]
 }

@@ -19,8 +19,9 @@ async function getDiariesByDate(req: Request, res: Response) {
 }
 
 async function getDiariesById(req: Request, res: Response) {
-  const { scheduleId } = req.query
-  const id = new mongoose.Types.ObjectId(scheduleId as string)
+  const { diaryId } = req.query
+  console.log(`diaryId`, diaryId)
+  const id = new mongoose.Types.ObjectId(diaryId as string)
   try {
     const models = await CalendarDate.aggregate([
       { $unwind: '$diaries' },
@@ -28,7 +29,7 @@ async function getDiariesById(req: Request, res: Response) {
     ])
     return !models
       ? res.status(200).json([])
-      : res.status(200).json(models[0].schedules)
+      : res.status(200).json(models[0].diaries)
   } catch (error) {
     console.error('Error getting diaries by ID', error)
     return res.status(500).json({ error: 'Error getting diaries by DATE' })
@@ -40,7 +41,7 @@ async function getDiariesRange(req: Request, res: Response) {
   try {
     const models = await CalendarDate.find(
       { date: { $gte: startDate, $lte: endDate } },
-      { schedules: 1 }
+      { diaries: 1, date: 1 }
     )
     return !models ? res.status(200).json([]) : res.status(200).json(models)
   } catch (error) {
@@ -87,20 +88,19 @@ async function createDiaries(date: string, req: Request, res: Response) {
 }
 
 async function patchDiaries(req: Request, res: Response) {
-  const { scheduleId } = req.query
-  const { title, start, end } = req.body
+  const { diaryId } = req.query
+  const { title, content } = req.body
   try {
     const filter = {
-      'diaries._id': new mongoose.Types.ObjectId(scheduleId as string),
+      'diaries._id': new mongoose.Types.ObjectId(diaryId as string),
     }
     const query = await CalendarDate.findOne<IDate>(filter)
-    if (query?.schedules) {
+    if (query?.diaries) {
       const update = {
-        schedules: query?.schedules.map((item) => {
-          if (item._id.toString() === scheduleId) {
+        diaries: query?.diaries.map((item) => {
+          if (item._id.toString() === diaryId) {
             item.title = title
-            item.start = start
-            item.end = end
+            item.content = content
           }
           return item
         }),
@@ -115,16 +115,16 @@ async function patchDiaries(req: Request, res: Response) {
 }
 
 async function deleteDiaries(req: Request, res: Response) {
-  const { scheduleId } = req.query
+  const { diaryId } = req.query
   try {
     const filter = {
-      'diaries._id': new mongoose.Types.ObjectId(scheduleId as string),
+      'diaries._id': new mongoose.Types.ObjectId(diaryId as string),
     }
     const query = await CalendarDate.findOne<IDate>(filter)
-    if (query?.schedules) {
+    if (query?.diaries) {
       const update = {
-        schedules: query?.schedules.filter(
-          (item) => item._id.toString() !== scheduleId
+        diaries: query?.diaries.filter(
+          (item) => item._id.toString() !== diaryId
         ),
       }
       await CalendarDate.updateOne(filter, update).exec()
@@ -138,11 +138,11 @@ async function deleteDiaries(req: Request, res: Response) {
 
 export const initRoutesDiary = (app: Application) => {
   app.get(`${BASE_URL}/dates/diaries`, async (req: Request, res: Response) => {
-    const { date, scheduleId, startDate, endDate } = req.query
+    const { date, diaryId, startDate, endDate } = req.query
     if (date) {
       await getDiariesByDate(req, res)
     }
-    if (scheduleId) {
+    if (diaryId) {
       await getDiariesById(req, res)
     }
     if (startDate && endDate) {
@@ -150,7 +150,7 @@ export const initRoutesDiary = (app: Application) => {
     }
   })
   app.post(`${BASE_URL}/dates/diaries`, async (req: Request, res: Response) => {
-    const date = dayjs(req.body.start).format('YYYY-MM-DD')
+    const date = dayjs(req.body.date).format('YYYY-MM-DD')
     const model = await CalendarDate.findOne({ date }).exec()
     return model ? addDiaries(model, req, res) : createDiaries(date, req, res)
   })

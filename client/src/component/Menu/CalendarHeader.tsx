@@ -2,9 +2,12 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import FullCalendar from '@fullcalendar/react'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { calendarTitleState } from '@/state/calendar.state'
-import { useCalendarAPI } from '@/hooks/useCalendarAPI'
+import { useScheduleAPI } from '@/hooks/useScheduleAPI'
+import { sideMenuState } from '@/state/menu.state'
+import { SIDE_MENU_TYPE } from '@/utils/constant'
+import { useDiaryAPI } from '@/hooks/useDiaryAPI'
 
 const Header = styled.header`
   display: flex;
@@ -25,11 +28,18 @@ interface Props {
 }
 
 const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
-  const { fetchScheduleRange } = useCalendarAPI(calendarRef)
+  const { fetchScheduleRange } = useScheduleAPI(calendarRef)
+  const { fetchDiariesRange } = useDiaryAPI(calendarRef)
   const [title, setTitle] = useRecoilState<string>(calendarTitleState)
+  const sideMenu = useRecoilValue(sideMenuState)
 
   useEffect(() => {
-    fetchScheduleRange()
+    if (sideMenu === SIDE_MENU_TYPE.SCHEDULE) {
+      fetchScheduleRange()
+    }
+    if (sideMenu === SIDE_MENU_TYPE.DIARY) {
+      fetchDiariesRange()
+    }
   }, [title])
 
   const onPrev = async () => {
@@ -49,8 +59,6 @@ const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
       setTitle(calendarApi?.view?.title ?? '')
     }
   }
-
-  console.log(`header`)
 
   return (
     <Header>

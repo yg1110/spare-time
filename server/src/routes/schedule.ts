@@ -40,7 +40,7 @@ async function getSchedulesRange(req: Request, res: Response) {
   try {
     const models = await CalendarDate.find(
       { date: { $gte: startDate, $lte: endDate } },
-      { schedules: 1 }
+      { schedules: 1, date: 1 }
     )
     return !models ? res.status(200).json([]) : res.status(200).json(models)
   } catch (error) {
@@ -157,7 +157,8 @@ export const initRoutesSchedule = (app: Application) => {
   app.post(
     `${BASE_URL}/dates/schedules`,
     async (req: Request, res: Response) => {
-      const date = dayjs(req.body.start).format('YYYY-MM-DD')
+      const date = dayjs(req.body.date).format('YYYY-MM-DD')
+      console.log(`date`, date)
       const model = await CalendarDate.findOne({ date }).exec()
       return model
         ? addSchedules(model, req, res)

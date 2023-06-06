@@ -13,14 +13,15 @@ async function getDiariesByDate(req: Request, res: Response) {
       ? res.status(200).json([])
       : res.status(200).json(models.diaries)
   } catch (error) {
-    console.error('Error getting diaries by DATE', error)
-    return res.status(500).json({ error: 'Error getting diaries by DATE' })
+    console.error('getDiariesByDate ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 날짜의 일기를 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
 async function getDiariesById(req: Request, res: Response) {
   const { diaryId } = req.query
-  console.log(`diaryId`, diaryId)
   const id = new mongoose.Types.ObjectId(diaryId as string)
   try {
     const models = await CalendarDate.aggregate([
@@ -31,8 +32,10 @@ async function getDiariesById(req: Request, res: Response) {
       ? res.status(200).json([])
       : res.status(200).json(models[0].diaries)
   } catch (error) {
-    console.error('Error getting diaries by ID', error)
-    return res.status(500).json({ error: 'Error getting diaries by DATE' })
+    console.error('getDiariesById ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 아이디의 일기를 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -45,8 +48,10 @@ async function getDiariesRange(req: Request, res: Response) {
     )
     return !models ? res.status(200).json([]) : res.status(200).json(models)
   } catch (error) {
-    console.error('Error getting diaries by ID', error)
-    return res.status(500).json({ error: 'Error getting diaries by DATE' })
+    console.error('getDiariesRange ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 날짜 범위내의 일기를 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -63,8 +68,10 @@ async function addDiaries(model: IDate, req: Request, res: Response) {
     const updatedDiaries = await model.save()
     res.status(201).json(updatedDiaries)
   } catch (error) {
-    console.error('Error update diaries', error)
-    res.status(500).json({ error: 'Error update diaries' })
+    console.error('addDiaries ERROR : ', error)
+    res.status(500).json({
+      error: '일기를 추가하던 도중 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -82,8 +89,8 @@ async function createDiaries(date: string, req: Request, res: Response) {
     const savedDate = await dates.save()
     res.status(201).json(savedDate)
   } catch (error) {
-    console.error('Error saving diaries', error)
-    res.status(500).json({ error: 'Error saving diaries' })
+    console.error('createDiaries ERROR : ', error)
+    res.status(500).json({ error: '일기를 추가하던 도중 에러가 발생했습니다.' })
   }
 }
 
@@ -109,8 +116,10 @@ async function patchDiaries(req: Request, res: Response) {
     }
     return res.status(201).json(query)
   } catch (error) {
-    console.error('Error update diaries', error)
-    return res.status(500).json({ error: 'Error update diaries' })
+    console.error('patchDiaries ERROR : ', error)
+    return res
+      .status(500)
+      .json({ error: '일기 정보 업데이트 도중 에러가 발생했습니다.' })
   }
 }
 
@@ -131,8 +140,10 @@ async function deleteDiaries(req: Request, res: Response) {
     }
     return res.status(201).json(query)
   } catch (error) {
-    console.error('Error delete diaries', error)
-    return res.status(500).json({ error: 'Error delete diaries' })
+    console.error('deleteDiaries ERROR : ', error)
+    return res
+      .status(500)
+      .json({ error: '일기 정보 삭제하던 도중 에러가 발생했습니다.' })
   }
 }
 

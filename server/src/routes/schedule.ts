@@ -13,8 +13,10 @@ async function getSchedulesByDate(req: Request, res: Response) {
       ? res.status(200).json([])
       : res.status(200).json(models.schedules)
   } catch (error) {
-    console.error('Error getting schedules by DATE', error)
-    return res.status(500).json({ error: 'Error getting schedules by DATE' })
+    console.error('getSchedulesByDate ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 날짜의 일정을 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -30,8 +32,10 @@ async function getSchedulesById(req: Request, res: Response) {
       ? res.status(200).json([])
       : res.status(200).json(models[0].schedules)
   } catch (error) {
-    console.error('Error getting schedules by ID', error)
-    return res.status(500).json({ error: 'Error getting schedules by DATE' })
+    console.error('getSchedulesById ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 아이디의 일정을 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -44,8 +48,10 @@ async function getSchedulesRange(req: Request, res: Response) {
     )
     return !models ? res.status(200).json([]) : res.status(200).json(models)
   } catch (error) {
-    console.error('Error getting schedules by ID', error)
-    return res.status(500).json({ error: 'Error getting schedules by DATE' })
+    console.error('getSchedulesRange ERROR : ', error)
+    return res.status(500).json({
+      error: '선택한 날짜 범위내의 일정을 불러오는 와중에 에러가 발생했습니다.',
+    })
   }
 }
 
@@ -63,8 +69,8 @@ async function addSchedules(model: IDate, req: Request, res: Response) {
     const updatedSchedule = await model.save()
     res.status(201).json(updatedSchedule)
   } catch (error) {
-    console.error('Error update schedules', error)
-    res.status(500).json({ error: 'Error update schedules' })
+    console.error('addSchedules ERROR : ', error)
+    res.status(500).json({ error: '일정을 추가하던 도중 에러가 발생했습니다.' })
   }
 }
 
@@ -83,8 +89,8 @@ async function createSchedules(date: string, req: Request, res: Response) {
     const savedDate = await dates.save()
     res.status(201).json(savedDate)
   } catch (error) {
-    console.error('Error saving schedules', error)
-    res.status(500).json({ error: 'Error saving schedules' })
+    console.error('createSchedules ERROR : ', error)
+    res.status(500).json({ error: '일정을 추가하던 도중 에러가 발생했습니다.' })
   }
 }
 
@@ -111,8 +117,10 @@ async function patchSchedules(req: Request, res: Response) {
     }
     return res.status(201).json(query)
   } catch (error) {
-    console.error('Error update schedules', error)
-    return res.status(500).json({ error: 'Error update schedules' })
+    console.error('patchSchedules ERROR : ', error)
+    return res
+      .status(500)
+      .json({ error: '일정 정보 업데이트 도중 에러가 발생했습니다.' })
   }
 }
 
@@ -133,8 +141,10 @@ async function deleteSchedules(req: Request, res: Response) {
     }
     return res.status(201).json(query)
   } catch (error) {
-    console.error('Error delete schedules', error)
-    return res.status(500).json({ error: 'Error delete schedules' })
+    console.error('deleteSchedules ERROR : ', error)
+    return res
+      .status(500)
+      .json({ error: '일정 정보 삭제하던 도중 에러가 발생했습니다.' })
   }
 }
 

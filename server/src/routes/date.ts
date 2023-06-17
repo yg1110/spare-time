@@ -1,6 +1,6 @@
 import { Application, Request, Response } from 'express'
 import { BASE_URL } from '../config'
-import CalendarDate, { IDate } from '../models/date'
+import CalendarDate, { IDate } from '../db/models/date'
 
 async function getDateRange(req: Request, res: Response) {
   const { startDate, endDate } = req.query

@@ -3,9 +3,11 @@ import { initRoutesDate } from './date'
 import { initRoutesSchedule } from './schedule'
 import { initRoutesDiary } from './diary'
 
-export const initRoutes = (app: Application) => {
+const initRoutes = (app: Application) => {
   initRoutesDate(app)
   initRoutesSchedule(app)
   initRoutesDiary(app)
   // initRoutesTodo(app)
 }
+
+export default initRoutes

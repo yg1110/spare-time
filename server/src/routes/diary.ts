@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import mongoose from 'mongoose'
-import CalendarDate, { IDate } from '../models/date'
+import CalendarDate, { IDate } from '../db/models/date'
 import { Application, Request, Response } from 'express'
 import { BASE_URL } from '../config'
-import Diary, { IDiary } from '../models/diary'
+import Diary, { IDiary } from '../db/models/diary'
 
 async function getDiariesByDate(req: Request, res: Response) {
   const { date } = req.query

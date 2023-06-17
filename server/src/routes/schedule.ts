@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import dayjs from 'dayjs'
-import CalendarDate, { IDate } from '../models/date'
-import Schedule, { ISchedule } from '../models/schedule'
+import CalendarDate, { IDate } from '../db/models/date'
+import Schedule, { ISchedule } from '../db/models/schedule'
 import { Application, Request, Response } from 'express'
 import { BASE_URL } from '../config'
 

@@ -13,3 +13,9 @@
 - express
 - mongodb + mongoose
 - axios
+- graphql
+- apollo-server-express
+
+# Deploy
+
+- Docker

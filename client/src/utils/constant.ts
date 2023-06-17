@@ -20,23 +20,6 @@ export const MODAL_MODE = {
   MODIFY: 'modify',
 }
 
-export const CATEGORY = {
-  TODO: {
-    key: 'todo',
-    name: '투두리스트',
-  },
-  DIARY: {
-    key: 'diary',
-    name: '일기',
-  },
-  SCHEDULE: {
-    key: 'schedule',
-    name: '스케쥴',
-  },
-}
-
-export const CATEGORIES = Object.values(CATEGORY)
-
 export const SIDE_MENU_TYPE = {
   DIARY: '일기',
   SCHEDULE: '일정',

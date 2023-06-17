@@ -1,5 +1,5 @@
 import { Application, Request, Response } from 'express'
-import Todo, { ITodo } from '../models/todo'
+import Todo, { ITodo } from '../db/models/todo'
 import { BASE_URL } from '../config'
 
 export const initRoutesTodo = (app: Application) => {

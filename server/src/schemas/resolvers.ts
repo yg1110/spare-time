@@ -1,31 +1,9 @@
 import mongoose from 'mongoose'
 import CalendarDate from '../db/models/date'
-import { isEmptyObject } from '../utils'
-
-/*
-query findDateById {
-  findDateById(diaryId: "647f5a9b8ac3daa0db0c2ad9", scheduleId: "648c569c18ffcf733bb0146c") {
-    ... on Diary {
-      title
-    }
-    ... on Schedule {
-      title
-    }
-    ... on Date {
-      diaries {
-        title
-      }
-      schedules {
-        title
-      }
-    }
-  }
-}
-*/
 
 const resolvers = {
   Query: {
-    findDateById: async (
+    findCalendarById: async (
       _: string,
       args: { diaryId: string; scheduleId: string }
     ) => {
@@ -43,7 +21,7 @@ const resolvers = {
           ])
           output.schedules = models?.[0]?.schedules ?? {}
         } catch (error) {
-          console.error('getSchedulesById ERROR : ', error)
+          console.error('findCalendarById scheduleId ERROR : ', error)
           return {
             error:
               '선택한 아이디의 일정을 불러오는 와중에 에러가 발생했습니다.',
@@ -59,35 +37,82 @@ const resolvers = {
           ])
           output.diaries = models?.[0]?.diaries ?? {}
         } catch (error) {
-          console.error('getDiariesById ERROR : ', error)
+          console.error('findCalendarById diaryId ERROR : ', error)
           return {
             error:
               '선택한 아이디의 일기를 불러오는 와중에 에러가 발생했습니다.',
           }
         }
       }
-
       return output
     },
-  },
-  Dates: {
-    __resolveType(date: any) {
-      const isEmptySchedules = isEmptyObject(date.schedules)
-      const isEmptyDiary = isEmptyObject(date.diaries)
-      if (!isEmptySchedules && isEmptyDiary) {
-        return 'Diary'
+    findCalendarByDate: async (
+      _: string,
+      args: {
+        date: string
+        isSchedules: boolean
+        isDiaries: boolean
       }
-      if (isEmptySchedules && !isEmptyDiary) {
-        return 'Schedule'
+    ) => {
+      const { date, isSchedules, isDiaries } = args
+      const output = {
+        schedules: {},
+        diaries: {},
       }
-      if (!isEmptySchedules && !isEmptyDiary) {
-        return 'Date'
+      try {
+        const models = await CalendarDate.findOne({ date }).exec()
+        if (isSchedules) {
+          output.schedules = models?.schedules ?? []
+        }
+        if (isDiaries) {
+          output.diaries = models?.diaries ?? []
+        }
+      } catch (error) {
+        console.error('findCalendarByDate ERROR : ', error)
+        return {
+          error: '선택한 날짜의 일정을 불러오는 와중에 에러가 발생했습니다.',
+        }
       }
-      if (isEmptySchedules && isEmptyDiary) {
-        return null
+      return output
+    },
+    findCalendarByRange: async (
+      _: string,
+      args: {
+        start: string
+        end: string
+      }
+    ) => {
+      const { start, end } = args
+      try {
+        const models = await CalendarDate.find({
+          date: { $gte: start, $lte: end },
+        })
+        return models
+      } catch (error) {
+        console.error('findCalendarByRange ERROR : ', error)
+        return {
+          error: '선택한 날짜의 일정을 불러오는 와중에 에러가 발생했습니다.',
+        }
       }
     },
   },
+  // CalendarDates: {
+  //   __resolveType(date: any) {
+  //     if (date.type === 'Calendar') {
+  //       const isEmptySchedules = isEmptyObject(date.schedules)
+  //       const isEmptyDiary = isEmptyObject(date.diaries)
+  //       if (!isEmptySchedules && isEmptyDiary) {
+  //         return 'Schedule'
+  //       } else if (isEmptySchedules && !isEmptyDiary) {
+  //         return 'Diary'
+  //       } else {
+  //         return 'Calendar'
+  //       }
+  //     } else {
+  //       return 'Calendars'
+  //     }
+  //   },
+  // },
 }
 
 export default resolvers

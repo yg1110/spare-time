@@ -2,7 +2,13 @@ import { gql } from 'apollo-server-express'
 
 const typeDefs = gql`
   type Query {
-    findDateById(diaryId: String, scheduleId: String): Dates
+    findCalendarById(diaryId: String, scheduleId: String): Calendar
+    findCalendarByDate(
+      date: String
+      isSchedules: Boolean
+      isDiaries: Boolean
+    ): Calendars
+    findCalendarByRange(start: String, end: String): [Calendars]
   }
   type Diary {
     title: String
@@ -14,11 +20,15 @@ const typeDefs = gql`
     start: String
     end: String
   }
-  type Date {
+  type Calendar {
     diaries: Diary
     schedules: Schedule
   }
-  union Dates = Diary | Schedule | Date
+  type Calendars {
+    diaries: [Diary]
+    schedules: [Schedule]
+  }
+  union CalendarDates = Calendar | Calendars
 `
 
 export default typeDefs

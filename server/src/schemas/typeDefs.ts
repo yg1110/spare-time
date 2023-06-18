@@ -10,6 +10,24 @@ const typeDefs = gql`
     ): Calendars
     findCalendarByRange(start: String, end: String): [Calendars]
   }
+  type Mutation {
+    insertDiary(date: String, title: String, content: String): [Diary]
+    editDiary(diaryId: String, title: String, content: String): [Diary]
+    deleteDiaries(diaryId: String): [Diary]
+    insertSchedule(
+      date: String
+      title: String
+      start: String
+      end: String
+    ): [Schedule]
+    editSchedules(
+      scheduleId: String
+      title: String
+      start: String
+      end: String
+    ): [Schedule]
+    deleteSchedules(scheduleId: String): [Schedule]
+  }
   type Diary {
     title: String
     content: String
@@ -28,7 +46,6 @@ const typeDefs = gql`
     diaries: [Diary]
     schedules: [Schedule]
   }
-  union CalendarDates = Calendar | Calendars
 `
 
 export default typeDefs

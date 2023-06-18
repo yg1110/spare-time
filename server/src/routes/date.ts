@@ -1,5 +1,4 @@
-import { Application, Request, Response } from 'express'
-import { BASE_URL } from '../config'
+import { Request, Response } from 'express'
 import CalendarDate, { IDate } from '../db/models/date'
 
 async function getDateRange(req: Request, res: Response) {
@@ -27,13 +26,11 @@ async function getDate(req: Request, res: Response) {
   }
 }
 
-export const initRoutesDate = (app: Application) => {
-  app.get(`${BASE_URL}/dates`, async (req: Request, res: Response) => {
-    const { startDate, endDate } = req.query
-    if (startDate && endDate) {
-      await getDateRange(req, res)
-    } else {
-      await getDate(req, res)
-    }
-  })
+export const getDates = async (req: Request, res: Response) => {
+  const { startDate, endDate } = req.query
+  if (startDate && endDate) {
+    await getDateRange(req, res)
+  } else {
+    await getDate(req, res)
+  }
 }

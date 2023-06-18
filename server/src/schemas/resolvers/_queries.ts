@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import CalendarDate from '../db/models/date'
+import CalendarDate from '../../db/models/date'
 
 export const findCalendarById = async (
   _: string,

@@ -2,7 +2,7 @@ import {
   findCalendarByDate,
   findCalendarById,
   findCalendarByRange,
-} from './_query'
+} from './_queries'
 import {
   deleteDiaries,
   deleteSchedules,
@@ -10,7 +10,7 @@ import {
   editSchedules,
   insertDiary,
   insertSchedule,
-} from './_mutation'
+} from './_mutations'
 
 const resolvers = {
   Query: {

@@ -1,7 +1,7 @@
-import CalendarDate, { IDate } from '../db/models/date'
-import Diary, { IDiary } from '../db/models/diary'
+import CalendarDate, { IDate } from '../../db/models/date'
+import Diary, { IDiary } from '../../db/models/diary'
 import dayjs from 'dayjs'
-import Schedule, { ISchedule } from '../db/models/schedule'
+import Schedule, { ISchedule } from '../../db/models/schedule'
 import mongoose from 'mongoose'
 
 async function addDiaries(

@@ -6,8 +6,8 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { calendarTitleState } from '@/state/calendar.state'
 import { useScheduleAPI } from '@/hooks/useScheduleAPI'
 import { sideMenuState } from '@/state/menu.state'
-import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { useDiaryAPI } from '@/hooks/useDiaryAPI'
+import { SIDE_MENU_TYPE } from '@/utils/constant'
 
 const Header = styled.header`
   display: flex;
@@ -46,7 +46,7 @@ const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.prev()
-      // await fetchScheduleRange()
+      await fetchScheduleRange()
       setTitle(calendarApi?.view?.title ?? '')
     }
   }
@@ -55,7 +55,7 @@ const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.next()
-      // await fetchScheduleRange()
+      await fetchScheduleRange()
       setTitle(calendarApi?.view?.title ?? '')
     }
   }

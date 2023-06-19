@@ -2,10 +2,12 @@ import { gql } from 'apollo-server-express'
 
 const types = gql`
   type Diary {
+    _id: ID
     title: String
     content: String
   }
   type Schedule {
+    _id: ID
     title: String
     location: String
     start: String

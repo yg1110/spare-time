@@ -1,37 +1,35 @@
 import dayjs from 'dayjs'
 import React from 'react'
 import FullCalendar from '@fullcalendar/react'
-import {
-  createSchedules,
-  deleteSchedules,
-  getScheduleById,
-  getSchedules,
-  getSchedulesRange,
-  updateSchedules,
-} from '@/services/schedules.service'
 import { DATES, SCHEDULE } from '@/types/Calendar'
 import { useSetRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
 import { calendarEventState, scheduleState } from '@/state/calendar.state'
+import { useLazyQuery, useMutation } from '@apollo/client'
+import {
+  DELETE_SCHEDULE,
+  EDIT_SCHEDULE,
+  INSERT_SCHEDULE,
+} from '@/graphql/_mutaions'
+import { GET_SCHEDULE_ID, GET_SCHEDULES_RANGE } from '@/graphql/_queries'
 
 export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setSchedule = useSetRecoilState<SCHEDULE>(scheduleState)
   const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
-
-  const fetchSchedule = async () => {
-    const calendarApi = calendarRef.current?.getApi()
-    if (calendarApi) {
-      const date = dayjs(calendarApi.getDate()).format('YYYY-MM-DD')
-      const schedule = await getSchedules<EventInput[]>(date)
-      if (schedule && schedule.length > 0) {
-        setCalendarEvent(schedule)
-      }
-    }
-  }
+  const [getSchedulesRange] = useLazyQuery(GET_SCHEDULES_RANGE)
+  const [getSchedulesId] = useLazyQuery(GET_SCHEDULE_ID)
+  const [insertSchedule] = useMutation(INSERT_SCHEDULE)
+  const [editSchedule] = useMutation(EDIT_SCHEDULE)
+  const [removeSchedule] = useMutation(DELETE_SCHEDULE)
 
   const fetchScheduleById = async (scheduleId: string) => {
-    const schedule = await getScheduleById<SCHEDULE>(scheduleId)
-    setSchedule(schedule)
+    const { data } = await getSchedulesId({
+      variables: {
+        scheduleId: scheduleId,
+      },
+    })
+    const { findCalendarById } = data
+    setSchedule(findCalendarById.schedules)
   }
 
   const fetchScheduleRange = async () => {
@@ -40,8 +38,14 @@ export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
       const { currentStart, currentEnd } = calendarApi.view
       const startDate = dayjs(currentStart).format('YYYY-MM-DD')
       const endDate = dayjs(currentEnd).format('YYYY-MM-DD')
-      const dates = await getSchedulesRange<DATES[]>(startDate, endDate)
-      const calendarEvents = dates.reduce(
+      const { data } = await getSchedulesRange({
+        variables: {
+          start: startDate,
+          end: endDate,
+        },
+      })
+      const { findCalendarByRange } = data
+      const calendarEvents = findCalendarByRange.reduce(
         (events: EventInput[], date: DATES) => events.concat(date.schedules),
         []
       ) as EventInput[]
@@ -52,22 +56,34 @@ export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
   }
 
   const createSchedule = async (schedule: EventInput) => {
-    await createSchedules(schedule)
+    await insertSchedule({
+      variables: {
+        ...schedule,
+      },
+    })
     await fetchScheduleRange()
   }
 
   const updateSchedule = async (scheduleId: string, schedule: EventInput) => {
-    await updateSchedules(scheduleId, schedule)
+    await editSchedule({
+      variables: {
+        scheduleId: scheduleId,
+        ...schedule,
+      },
+    })
     await fetchScheduleRange()
   }
 
   const deleteSchedule = async (scheduleId: string) => {
-    await deleteSchedules(scheduleId)
+    await removeSchedule({
+      variables: {
+        scheduleId: scheduleId,
+      },
+    })
     await fetchScheduleRange()
   }
 
   return {
-    fetchSchedule,
     fetchScheduleById,
     fetchScheduleRange,
     createSchedule,

@@ -7,6 +7,7 @@ import SideMenu from '@/component/Menu/SideMenu'
 import { styled } from '@mui/material/styles'
 import { RecoilRoot } from 'recoil'
 import { AppProps } from 'next/app'
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import '@/styles/globals.css'
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
@@ -23,24 +24,31 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }))
 
+const client = new ApolloClient({
+  uri: 'http://localhost:8000/graphql',
+  cache: new InMemoryCache(),
+})
+
 export default function App({ Component, pageProps }: AppProps) {
   const calendarRef = React.useRef<FullCalendar>(null)
   const [open, setOpen] = React.useState(false)
 
   return (
-    <RecoilRoot>
-      <Box sx={{ display: 'flex', height: 'calc(100vh - 56px)' }}>
-        <CssBaseline />
-        {/** 상단 헤더 **/}
-        <AppHeader open={open} setOpen={setOpen} calendarRef={calendarRef} />
-        {/** 사이드 메뉴 **/}
-        <SideMenu open={open} setOpen={setOpen} calendarRef={calendarRef} />
-        {/** 메인 컴포넌트 **/}
-        <Main open={open}>
-          <DrawerHeader />
-          <Component calendarRef={calendarRef} {...pageProps} />
-        </Main>
-      </Box>
-    </RecoilRoot>
+    <ApolloProvider client={client}>
+      <RecoilRoot>
+        <Box sx={{ display: 'flex', height: 'calc(100vh - 56px)' }}>
+          <CssBaseline />
+          {/** 상단 헤더 **/}
+          <AppHeader open={open} setOpen={setOpen} calendarRef={calendarRef} />
+          {/** 사이드 메뉴 **/}
+          <SideMenu open={open} setOpen={setOpen} calendarRef={calendarRef} />
+          {/** 메인 컴포넌트 **/}
+          <Main open={open}>
+            <DrawerHeader />
+            <Component calendarRef={calendarRef} {...pageProps} />
+          </Main>
+        </Box>
+      </RecoilRoot>
+    </ApolloProvider>
   )
 }

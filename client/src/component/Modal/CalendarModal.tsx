@@ -80,7 +80,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
     >
       <Container>
         <Title>{dayjs(selectedDate).format('YYYY-MM-DD')}</Title>
-        <LocalizationProvider dateAdapter={AdapterDayjs} locale={LANG}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <RowContainer>
             {sideMenu === SIDE_MENU_TYPE.DIARY && (
               <Diary calendarRef={calendarRef} setShowModal={setShowModal} />

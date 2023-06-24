@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles'
 import { RecoilRoot } from 'recoil'
 import { AppProps } from 'next/app'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import '@/styles/globals.css'
+import '@/styles/globals.scss'
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean

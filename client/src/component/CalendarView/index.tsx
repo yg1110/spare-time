@@ -77,6 +77,7 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
       <FullCalendar
         ref={calendarRef}
         locale={LANG}
+        allDaySlot={false}
         headerToolbar={false}
         selectable={true}
         dayMaxEvents={true}

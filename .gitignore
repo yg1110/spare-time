@@ -100,4 +100,5 @@ dist
 .tern-port
 
 mongodb
-rootca.*
+rootca.crt
+rootca.key

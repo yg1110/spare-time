@@ -16,7 +16,9 @@ import { GET_SCHEDULE_ID, GET_SCHEDULES_RANGE } from '@/graphql/_queries'
 export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setSchedule = useSetRecoilState<SCHEDULE>(scheduleState)
   const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
-  const [getSchedulesRange] = useLazyQuery(GET_SCHEDULES_RANGE)
+  const [getSchedulesRange] = useLazyQuery(GET_SCHEDULES_RANGE, {
+    fetchPolicy: 'network-only',
+  })
   const [getSchedulesId] = useLazyQuery(GET_SCHEDULE_ID)
   const [insertSchedule] = useMutation(INSERT_SCHEDULE)
   const [editSchedule] = useMutation(EDIT_SCHEDULE)

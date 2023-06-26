@@ -48,10 +48,8 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   }
 
   const onEventClick = async (clickInfo: EventClickArg) => {
-    console.log(`sideMenu`, sideMenu)
     if (sideMenu === SIDE_MENU_TYPE.SCHEDULE) {
       const scheduleId = clickInfo.event.extendedProps._id
-      console.log(`scheduleId`, scheduleId)
       if (scheduleId) {
         await fetchScheduleById(scheduleId)
       }

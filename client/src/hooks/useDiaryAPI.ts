@@ -12,7 +12,9 @@ import { DELETE_DIARY, EDIT_DIARY, INSERT_DIARY } from '@/graphql/_mutaions'
 export function useDiaryAPI(calendarRef: React.RefObject<FullCalendar>) {
   const setDiary = useSetRecoilState<DIARY>(diaryState)
   const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
-  const [getDiariesRange] = useLazyQuery(GET_DIARIES_RANGE)
+  const [getDiariesRange] = useLazyQuery(GET_DIARIES_RANGE, {
+    fetchPolicy: 'network-only',
+  })
   const [getDiaryId] = useLazyQuery(GET_DIARY_ID)
   const [insertDiary] = useMutation(INSERT_DIARY)
   const [editDiary] = useMutation(EDIT_DIARY)

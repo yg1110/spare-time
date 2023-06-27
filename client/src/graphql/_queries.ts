@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export const GET_DIARIES_RANGE = gql`
   query FindCalendarByRange($start: String, $end: String) {
     findCalendarByRange(start: $start, end: $end) {
+      date
       diaries {
         _id
         content

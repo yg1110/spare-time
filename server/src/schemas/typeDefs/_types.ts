@@ -18,6 +18,7 @@ const types = gql`
     schedules: Schedule
   }
   type Calendars {
+    date: String
     diaries: [Diary]
     schedules: [Schedule]
   }

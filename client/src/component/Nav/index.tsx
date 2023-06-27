@@ -6,16 +6,19 @@ import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth'
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek'
 import WebAssetIcon from '@mui/icons-material/WebAsset'
 import { CALENDAR_VIEW_MODE, MENUS } from '@/utils/constant'
-import { useRecoilState } from 'recoil'
-import { selectedMenuState } from '@/state/calendar.state'
+import { useRecoilState, useSetRecoilState } from 'recoil'
+import { calendarTitleState, selectedMenuState } from '@/state/calendar.state'
+import FullCalendar from '@fullcalendar/react'
 
 interface Props {
+  calendarRef: React.RefObject<FullCalendar>
   changeView: (view: string) => void
 }
 
-const Nav: React.FC<Props> = ({ changeView }) => {
+const Nav: React.FC<Props> = ({ calendarRef, changeView }) => {
   const [selectedMenu, setSelectedMenu] =
     useRecoilState<string>(selectedMenuState)
+  const setTitle = useSetRecoilState<string>(calendarTitleState)
 
   const onChangeMenu = (
     event: React.SyntheticEvent,
@@ -23,6 +26,11 @@ const Nav: React.FC<Props> = ({ changeView }) => {
   ) => {
     changeView(selectView)
     setSelectedMenu(selectView)
+
+    const calendarApi = calendarRef.current?.getApi()
+    if (calendarApi) {
+      setTitle(calendarApi?.view?.title ?? '')
+    }
   }
 
   return (

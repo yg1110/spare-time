@@ -28,7 +28,7 @@ const Calendar: React.FC<Props> = ({ calendarRef }) => {
     <Container>
       <CalendarView calendarRef={calendarRef} />
       <CalendarModal calendarRef={calendarRef} />
-      <Nav changeView={changeView} />
+      <Nav calendarRef={calendarRef} changeView={changeView} />
     </Container>
   )
 }

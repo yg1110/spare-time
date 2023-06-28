@@ -2,12 +2,9 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import FullCalendar from '@fullcalendar/react'
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 import { calendarTitleState } from '@/state/calendar.state'
-import { useScheduleAPI } from '@/hooks/useScheduleAPI'
-import { sideMenuState } from '@/state/menu.state'
-import { useDiaryAPI } from '@/hooks/useDiaryAPI'
-import { SIDE_MENU_TYPE } from '@/utils/constant'
+import { useDateAPI } from '@/hooks/useDateAPI'
 
 const Header = styled.header`
   display: flex;
@@ -28,25 +25,18 @@ interface Props {
 }
 
 const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
-  const { fetchScheduleRange } = useScheduleAPI(calendarRef)
-  const { fetchDiariesRange } = useDiaryAPI(calendarRef)
+  const { fetchDateRange } = useDateAPI(calendarRef)
   const [title, setTitle] = useRecoilState<string>(calendarTitleState)
-  const sideMenu = useRecoilValue(sideMenuState)
 
   useEffect(() => {
-    if (sideMenu === SIDE_MENU_TYPE.SCHEDULE) {
-      fetchScheduleRange()
-    }
-    if (sideMenu === SIDE_MENU_TYPE.DIARY) {
-      fetchDiariesRange()
-    }
+    fetchDateRange()
   }, [title])
 
   const onPrev = async () => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.prev()
-      await fetchScheduleRange()
+      await fetchDateRange()
       setTitle(calendarApi?.view?.title ?? '')
     }
   }
@@ -55,7 +45,7 @@ const CalendarHeader: React.FC<Props> = ({ calendarRef }) => {
     const calendarApi = calendarRef.current?.getApi()
     if (calendarApi) {
       calendarApi.next()
-      await fetchScheduleRange()
+      await fetchDateRange()
       setTitle(calendarApi?.view?.title ?? '')
     }
   }

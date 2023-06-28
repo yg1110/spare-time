@@ -7,7 +7,7 @@ import Schedule from '@/component/Modal/Schedule'
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LANG, SIDE_MENU_TYPE } from '@/utils/constant'
+import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { calendarModalState } from '@/state/modal.state'
 import {
@@ -53,8 +53,9 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
 
   const initSchedule = {
     title: '',
-    start: dayjs(selectedDate).startOf('day'),
-    end: dayjs(selectedDate).endOf('day'),
+    allDay: true,
+    start: dayjs(selectedDate).add(1, 'hour'),
+    end: dayjs(selectedDate).add(2, 'hour'),
   }
 
   const initDiary = {

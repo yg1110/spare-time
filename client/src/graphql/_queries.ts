@@ -1,9 +1,15 @@
 import { gql } from '@apollo/client'
 
-export const GET_DIARIES_RANGE = gql`
+export const GET_DATE_RANGE = gql`
   query FindCalendarByRange($start: String, $end: String) {
     findCalendarByRange(start: $start, end: $end) {
       date
+      schedules {
+        _id
+        start
+        title
+        end
+      }
       diaries {
         _id
         content
@@ -20,19 +26,6 @@ export const GET_DIARY_ID = gql`
         _id
         content
         title
-      }
-    }
-  }
-`
-
-export const GET_SCHEDULES_RANGE = gql`
-  query FindCalendarByRange($start: String, $end: String) {
-    findCalendarByRange(start: $start, end: $end) {
-      schedules {
-        _id
-        start
-        title
-        end
       }
     }
   }

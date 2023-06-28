@@ -20,13 +20,15 @@ body {
 }
 
 /* 일요일 날짜 빨간색 */
-.fc-day-sun a {
+.fc-day-sun .fc-daygrid-day-top a,
+.fc-day-sun .fc-scrollgrid-sync-inner a {
   color: red;
   text-decoration: none;
 }
 
 /* 토요일 날짜 파란색 */
-.fc-day-sat a {
+.fc-day-sat .fc-daygrid-day-top a,
+.fc-day-sat .fc-scrollgrid-sync-inner a {
   color: blue;
   text-decoration: none;
 }
@@ -56,11 +58,11 @@ body {
 /* Remove the header border from Schedule */
 .fc td, .fc th {
   border-style: none !important;
+  border-color: #d8d8d8 !important;
   border-width: 1px !important;
   padding: 0 !important;
   vertical-align: top !important;
 }
-
 
 /* Inherits background for each event from Schedule. */
 .fc-event .fc-bg {
@@ -142,13 +144,17 @@ body {
 
 /* Not raised button */
 .fc-state-default {
-  box-shadow: None;
-}
-
-thead tr {
-  border-bottom: solid 1px #EBEBEB;
+  box-shadow: none;
 }
 
 .MuiBox-root {
   border-top: solid 1px #EBEBEB;
+}
+
+.fc-dayGridMonth-view thead, .fc-timeGridDay-view thead {
+  display: none;
+}
+
+.fc-timegrid-slots tbody tr:nth-child(2n) {
+  border-top: solid 1px #d8d8d8;
 }

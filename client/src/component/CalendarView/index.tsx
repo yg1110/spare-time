@@ -15,8 +15,10 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useScheduleAPI } from '@/hooks/useScheduleAPI'
 import { calendarModalState } from '@/state/modal.state'
 import { EventClickArg, EventInput } from '@fullcalendar/core'
-import { sideMenuState } from '@/state/menu.state'
 import { useDiaryAPI } from '@/hooks/useDiaryAPI'
+import 'dayjs/locale/ko'
+import dayjs from 'dayjs'
+import { sideMenuState } from '@/state/menu.state'
 
 const Container = styled.div`
   display: flex;
@@ -39,8 +41,7 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
   const [title, setTitle] = useRecoilState<string>(calendarTitleState)
   const selectedMenu = useRecoilValue<string>(selectedMenuState)
-
-  const sideMenu = useRecoilValue(sideMenuState)
+  const setSideMenu = useSetRecoilState(sideMenuState)
 
   const onDateSelect = (arg: DateClickArg) => {
     setShowModal(true)
@@ -48,17 +49,19 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   }
 
   const onEventClick = async (clickInfo: EventClickArg) => {
-    if (sideMenu === SIDE_MENU_TYPE.SCHEDULE) {
+    if (clickInfo.event.extendedProps.type === SIDE_MENU_TYPE.SCHEDULE) {
       const scheduleId = clickInfo.event.extendedProps._id
       if (scheduleId) {
         await fetchScheduleById(scheduleId)
       }
+      setSideMenu(SIDE_MENU_TYPE.SCHEDULE)
     }
-    if (sideMenu === SIDE_MENU_TYPE.DIARY) {
+    if (clickInfo.event.extendedProps.type === SIDE_MENU_TYPE.DIARY) {
       const diaryId = clickInfo.event.extendedProps._id
       if (diaryId) {
         await fetchDiaryById(diaryId)
       }
+      setSideMenu(SIDE_MENU_TYPE.DIARY)
     }
     setShowModal(true)
   }
@@ -75,7 +78,6 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
       <FullCalendar
         ref={calendarRef}
         locale={LANG}
-        allDaySlot={false}
         headerToolbar={false}
         selectable={true}
         dayMaxEvents={true}
@@ -83,6 +85,18 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
         initialView={selectedMenu}
         eventClick={onEventClick}
         dateClick={onDateSelect}
+        allDayText="종일"
+        dayHeaderContent={(args) => {
+          const week = dayjs(args.date).locale('ko').format('ddd')
+          const day = dayjs(args.date).locale('ko').format('D')
+          return {
+            html: `<div>${week}</div><div>${day}</div>`,
+          }
+        }}
+        slotLabelFormat={{
+          hour: '2-digit',
+          hour12: false,
+        }}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
       />
     </Container>

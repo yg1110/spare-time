@@ -1,11 +1,11 @@
 export const LANG = 'ko'
 
 export const MENUS = {
-  TODAY: 'today',
-  MONTH: 'month',
-  WEEK: 'week',
-  DAY: 'day',
-  ADD: 'add',
+  TODAY: '당일',
+  MONTH: '월간',
+  WEEK: '주간',
+  DAY: '일간',
+  ADD: '추가',
 }
 
 export const CALENDAR_VIEW_MODE = {
@@ -13,6 +13,7 @@ export const CALENDAR_VIEW_MODE = {
   WEEK: 'timeGridWeek',
   DAY: 'timeGridDay',
   LIST: 'listWeek',
+  ADD: 'add',
 }
 
 export const MODAL_MODE = {
@@ -21,6 +22,7 @@ export const MODAL_MODE = {
 }
 
 export const SIDE_MENU_TYPE = {
+  TODO: '할일',
   DIARY: '일기',
   SCHEDULE: '일정',
 }

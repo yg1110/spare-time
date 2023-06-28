@@ -16,9 +16,8 @@ import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { SvgIconProps } from '@mui/material'
 import { useRecoilState } from 'recoil'
 import { sideMenuState } from '@/state/menu.state'
-import { useScheduleAPI } from '@/hooks/useScheduleAPI'
-import { useDiaryAPI } from '@/hooks/useDiaryAPI'
 import FullCalendar from '@fullcalendar/react'
+import { useDateAPI } from '@/hooks/useDateAPI'
 
 type MENU_TYPE = {
   menu: string
@@ -52,8 +51,7 @@ interface Props {
 
 const SideMenu: React.FC<Props> = ({ open, setOpen, calendarRef }) => {
   const theme = useTheme()
-  const { fetchScheduleRange } = useScheduleAPI(calendarRef)
-  const { fetchDiariesRange } = useDiaryAPI(calendarRef)
+  const { fetchDateRange } = useDateAPI(calendarRef)
   const [sideMenu, setSideMenu] = useRecoilState(sideMenuState)
 
   const onDrawerClose = () => {
@@ -62,14 +60,8 @@ const SideMenu: React.FC<Props> = ({ open, setOpen, calendarRef }) => {
 
   const onSelectSideMenu = async (menu: string) => {
     setSideMenu(menu)
-    if (menu === SIDE_MENU_TYPE.SCHEDULE) {
-      await fetchScheduleRange()
-      setOpen(false)
-    }
-    if (menu === SIDE_MENU_TYPE.DIARY) {
-      await fetchDiariesRange()
-      setOpen(false)
-    }
+    await fetchDateRange()
+    setOpen(false)
   }
 
   return (

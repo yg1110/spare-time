@@ -99,7 +99,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <Tab label="일정" value="일정" />
               <Tab label="일기" value="일기" />
             </TabList>
-            <TabPanel value="일정">
+            <TabPanel value="일정" style={{ overflow: 'scroll' }}>
               <RowContainer>
                 <TimeLabel>날짜</TimeLabel>
                 <MobileDatePicker
@@ -114,7 +114,7 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
                 />
               </RowContainer>
             </TabPanel>
-            <TabPanel value="일기">
+            <TabPanel value="일기" style={{ overflow: 'scroll' }}>
               <RowContainer>
                 <TimeLabel>날짜</TimeLabel>
                 <MobileDatePicker

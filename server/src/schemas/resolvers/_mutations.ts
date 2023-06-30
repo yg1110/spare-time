@@ -124,12 +124,13 @@ export const insertSchedule = async (
 export const editDiary = async (
   _: string,
   args: {
+    date: string
     diaryId: string
     title: string
     content: string
   }
 ) => {
-  const { diaryId, title, content } = args
+  const { date, diaryId, title, content } = args
   try {
     const filter = {
       'diaries._id': new mongoose.Types.ObjectId(diaryId as string),
@@ -137,6 +138,7 @@ export const editDiary = async (
     const query = await CalendarDate.findOne<IDate>(filter)
     if (query?.diaries) {
       const update = {
+        date: date,
         diaries: query?.diaries.map((item) => {
           if (item._id.toString() === diaryId) {
             item.title = title

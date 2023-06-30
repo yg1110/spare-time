@@ -10,7 +10,6 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Drawer from '@mui/material/Drawer'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import EventNoteIcon from '@mui/icons-material/EventNote'
 import { styled, useTheme } from '@mui/material/styles'
 import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { SvgIconProps } from '@mui/material'
@@ -28,10 +27,6 @@ const SIDE_MENU: MENU_TYPE[] = [
   {
     menu: SIDE_MENU_TYPE.SCHEDULE,
     icon: <CalendarMonthIcon />,
-  },
-  {
-    menu: SIDE_MENU_TYPE.DIARY,
-    icon: <EventNoteIcon />,
   },
 ]
 

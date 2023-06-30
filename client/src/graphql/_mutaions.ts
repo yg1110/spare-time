@@ -59,8 +59,18 @@ export const INSERT_DIARY = gql`
 `
 
 export const EDIT_DIARY = gql`
-  mutation EditDiary($diaryId: String, $title: String, $content: String) {
-    editDiary(diaryId: $diaryId, title: $title, content: $content) {
+  mutation EditDiary(
+    $date: String
+    $diaryId: String
+    $title: String
+    $content: String
+  ) {
+    editDiary(
+      date: $date
+      diaryId: $diaryId
+      title: $title
+      content: $content
+    ) {
       _id
       content
       title

@@ -2,12 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { TextareaAutosize } from '@mui/material'
 import { DIARY } from '@/types/Calendar'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { diaryState, selectedDateState } from '@/state/calendar.state'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidValue } from '@/utils/helper'
 import { useDiaryAPI } from '@/hooks/useDiaryAPI'
 import FullCalendar from '@fullcalendar/react'
+import dayjs from 'dayjs'
 
 const TimeWrapper = styled.div`
   display: flex;
@@ -84,12 +85,13 @@ const SubmitButtonText = styled.p`
 interface Props {
   calendarRef: React.RefObject<FullCalendar>
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+  currentDate: Date
 }
 
-const Diary: React.FC<Props> = ({ calendarRef, setShowModal }) => {
+const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
   const { createDiary, updateDiary, deleteDiary } = useDiaryAPI(calendarRef)
   const [diary, setDiary] = useRecoilState<DIARY>(diaryState)
-  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
+  const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)
   const mode = diary?._id ? MODAL_MODE.MODIFY : MODAL_MODE.CREATE
 
   function onChangeValue(
@@ -107,10 +109,12 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal }) => {
   async function onUpdateDiary(): Promise<void> {
     const diaryId = diary._id
     const event = {
+      date: dayjs(currentDate).format('YYYY-MM-DD'),
       title: diary.title,
       content: diary.content,
     }
     if (diaryId) {
+      setSelectedDate(currentDate)
       await updateDiary(diaryId, event)
     }
     setShowModal(false)
@@ -119,6 +123,7 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal }) => {
   async function onDeleteDiary(): Promise<void> {
     const diaryId = diary._id
     if (diaryId) {
+      setSelectedDate(new Date())
       await deleteDiary(diaryId)
     }
     setShowModal(false)
@@ -137,8 +142,9 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal }) => {
     }
     const body = {
       ...diary,
-      date: selectedDate,
+      date: currentDate,
     }
+    setSelectedDate(currentDate)
     await createDiary(body)
     setShowModal(false)
     setDiary({

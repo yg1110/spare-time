@@ -16,9 +16,9 @@ import { useScheduleAPI } from '@/hooks/useScheduleAPI'
 import { calendarModalState } from '@/state/modal.state'
 import { EventClickArg, EventInput } from '@fullcalendar/core'
 import { useDiaryAPI } from '@/hooks/useDiaryAPI'
+import { sideMenuState } from '@/state/menu.state'
 import 'dayjs/locale/ko'
 import dayjs from 'dayjs'
-import { sideMenuState } from '@/state/menu.state'
 
 const Container = styled.div`
   display: flex;
@@ -49,6 +49,7 @@ const CalendarView: React.FC<Props> = ({ calendarRef }) => {
   }
 
   const onEventClick = async (clickInfo: EventClickArg) => {
+    setSelectedDate(dayjs(clickInfo.event.start).toDate())
     if (clickInfo.event.extendedProps.type === SIDE_MENU_TYPE.SCHEDULE) {
       const scheduleId = clickInfo.event.extendedProps._id
       if (scheduleId) {

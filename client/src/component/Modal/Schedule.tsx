@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { TimePicker } from '@mui/x-date-pickers'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidDate } from '@/utils/helper'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { SCHEDULE } from '@/types/Calendar'
 import { scheduleState, selectedDateState } from '@/state/calendar.state'
 import { useScheduleAPI } from '@/hooks/useScheduleAPI'
@@ -56,13 +56,18 @@ const Input = styled.input`
 interface Props {
   calendarRef: React.RefObject<FullCalendar>
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+  currentDate: Date
 }
 
-const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
+const Schedule: React.FC<Props> = ({
+  calendarRef,
+  setShowModal,
+  currentDate,
+}) => {
   const { createSchedule, updateSchedule, deleteSchedule } =
     useScheduleAPI(calendarRef)
   const [schedule, setSchedule] = useRecoilState<SCHEDULE>(scheduleState)
-  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
+  const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)
   const mode = schedule?._id ? MODAL_MODE.MODIFY : MODAL_MODE.CREATE
 
   function onChangeValue(
@@ -88,12 +93,16 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
 
   async function onUpdateSchedule(): Promise<void> {
     const scheduleId = schedule._id
+    const date = dayjs(currentDate).format('YYYY-MM-DD')
+    const start = dayjs(schedule.start).format('HH:mm:ss')
+    const end = dayjs(schedule.end).format('HH:mm:ss')
     const event = {
       title: schedule.title,
-      start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
-      end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
+      start: dayjs(`${date} ${start}`).format('YYYY-MM-DD HH:mm:ss'),
+      end: dayjs(`${date} ${end}`).format('YYYY-MM-DD HH:mm:ss'),
     }
     if (scheduleId) {
+      setSelectedDate(currentDate)
       await updateSchedule(scheduleId, event)
     }
     setShowModal(false)
@@ -102,6 +111,7 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
   async function onDeleteSchedule(): Promise<void> {
     const scheduleId = schedule._id
     if (scheduleId) {
+      setSelectedDate(new Date())
       await deleteSchedule(scheduleId)
       setShowModal(false)
     }
@@ -118,12 +128,17 @@ const Schedule: React.FC<Props> = ({ calendarRef, setShowModal }) => {
       alert('종료 시간을 선택해주세요.')
       return
     }
+
+    const date = dayjs(currentDate).format('YYYY-MM-DD')
+    const start = dayjs(schedule.start).format('HH:mm:ss')
+    const end = dayjs(schedule.end).format('HH:mm:ss')
     const event = {
-      date: dayjs(selectedDate).format('YYYY-MM-DD'),
+      date: dayjs(currentDate).format('YYYY-MM-DD'),
       title: schedule.title,
-      start: dayjs(schedule.start).format('YYYY-MM-DD HH:mm:ss'),
-      end: dayjs(schedule.end).format('YYYY-MM-DD HH:mm:ss'),
+      start: dayjs(`${date} ${start}`).format('YYYY-MM-DD HH:mm:ss'),
+      end: dayjs(`${date} ${end}`).format('YYYY-MM-DD HH:mm:ss'),
     }
+    setSelectedDate(currentDate)
     await createSchedule(event)
     setShowModal(false)
   }

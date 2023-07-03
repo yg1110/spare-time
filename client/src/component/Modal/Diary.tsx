@@ -142,7 +142,7 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
     }
     const body = {
       ...diary,
-      date: currentDate,
+      date: dayjs(currentDate).format('YYYY-MM-DD'),
     }
     setSelectedDate(currentDate)
     await createDiary(body)

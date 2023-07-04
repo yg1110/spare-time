@@ -23,7 +23,7 @@ API 서버 : https://15.165.162.58:4000/graphql
 
 ### Front
 
-- react
+- next
 - styled-components
 - material-ui
 - fullcalendar
@@ -116,9 +116,26 @@ DB와 API 서버로 사용하였습니다.
 
 - 조회 쿼리에 fetch policy 옵션 추가
 
-> const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
-> fetchPolicy: 'network-only',
-> })
+```javascript
+const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
+  fetchPolicy: 'network-only',
+})
+```
+
+### 3. AWS에서 서버 실행시 타임존이 달라서 디비에 시간이 제대로 들어가지 않는 문제
+
+- aws timezone 수정후 재부팅
+
+> sudo rm /etc/localtime
+>
+> sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+### 4. mongoDB 컨테이너가 내려갔을 경우에 기존 디비데이터를 복구하는 방법
+
+- docker를 실행할 때 -v옵션 사용하여 볼륨을 설정
+- -v {외부Volume}:/data/db
+
+> docker run -p 27017:27017 -v /home/ubuntu/mongodb/data:/data/db -d spare-time-mongo:0.0.1
 
 ## 🌐 SEO
 

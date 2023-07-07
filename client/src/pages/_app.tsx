@@ -25,7 +25,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 const client = new ApolloClient({
-  uri: 'https://15.165.162.58:4000/graphql',
+  uri: 'https://sparetime.life:4000/graphql',
   cache: new InMemoryCache(),
 })
 

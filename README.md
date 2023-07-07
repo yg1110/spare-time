@@ -17,11 +17,7 @@ SpareTime 프로젝트는 달력에 여러 정보들을 복합적으로 넣은 �
 
 홈페이지 주소 : https://spare-time.vercel.app/calendar
 
-API 서버 : https://15.165.162.58:4000/graphql
-
-### 현재 apollo-client가 apollo-server https 인증서 오류로 연결이 되지 않는 오류가 있습니다.
-
-### 테스트를 위해 api 서버를 먼저 실행후 실제 서비스를 접속해주시면 감사하겠습니다
+API 서버 : https://sparetime.life:4000/graphql
 
 ## 🧑‍💻 Stack
 
@@ -141,10 +137,15 @@ const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
 
 > docker run -p 27017:27017 -v /home/ubuntu/mongodb/data:/data/db -d spare-time-mongo:0.0.1
 
-### 5. apollo client가 https 인증서 오류가 날경우 제대로 연결되지 않는 오류
+### 5. apollo client가 CA 인증되지 않은 ssl을 사용한 https를 사용할 경우 연결되지 않는 오류
 
-- apollo-server API서버를 먼저 들어가지 않고 실제 페이지를 들어갔을 경우 에러가 나서 모든 동작이 재대로 일어나지 않음
-- 해결중..
+- CA 인즌된 https API 서버 사용
+
+> API 주소 도메인 구입 (https://15.165.162.58:4000/graphql -> https://sparetime.life:4000/graphql)
+
+> https://www.sslforfree.com/ 사이트에서 무료 ssl을 설정 후 CA가 인증된 https api 서버로 변경
+
+> aws 로드밸런서로 CA가 설정된 ssl key값 설정
 
 ## 🌐 SEO
 

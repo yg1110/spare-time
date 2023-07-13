@@ -1,15 +1,12 @@
 import { Application } from 'express'
 import { BASE_URL } from '../config'
-import { deleteTodo, getTodo, getTodos, insertTodo, updateTodo } from './todos'
-import { getDates } from './date'
+import { login, password, profile, signup } from './auth'
 
 const initRoutes = (app: Application) => {
-  app.get(`${BASE_URL}/dates`, getDates)
-  app.get(`${BASE_URL}/todos`, getTodos)
-  app.get(`${BASE_URL}/todos/:id`, getTodo)
-  app.post(`${BASE_URL}/todos`, insertTodo)
-  app.patch(`${BASE_URL}/todos/:id`, updateTodo)
-  app.delete(`${BASE_URL}/todos/:id`, deleteTodo)
+  app.post(`${BASE_URL}/auth/login`, login)
+  app.post(`${BASE_URL}/auth/signup`, signup)
+  app.post(`${BASE_URL}/auth/password`, password)
+  app.get(`${BASE_URL}/auth/user`, profile)
 }
 
 export default initRoutes

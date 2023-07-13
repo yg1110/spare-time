@@ -102,3 +102,4 @@ dist
 mongodb
 rootca.crt
 rootca.key
+command.md

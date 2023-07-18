@@ -25,6 +25,7 @@ export const SIDE_MENU_TYPE = {
   TODO: '할일',
   DIARY: '일기',
   SCHEDULE: '일정',
+  LOGOUT: '로그아웃',
 }
 
 export const PASSWORD_QUESTION = [

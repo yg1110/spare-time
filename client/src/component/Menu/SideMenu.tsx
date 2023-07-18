@@ -10,6 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Drawer from '@mui/material/Drawer'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { styled, useTheme } from '@mui/material/styles'
 import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { SvgIconProps } from '@mui/material'
@@ -27,6 +28,10 @@ const SIDE_MENU: MENU_TYPE[] = [
   {
     menu: SIDE_MENU_TYPE.SCHEDULE,
     icon: <CalendarMonthIcon />,
+  },
+  {
+    menu: SIDE_MENU_TYPE.LOGOUT,
+    icon: <LogoutIcon />,
   },
 ]
 
@@ -55,7 +60,12 @@ const SideMenu: React.FC<Props> = ({ open, setOpen, calendarRef }) => {
 
   const onSelectSideMenu = async (menu: string) => {
     setSideMenu(menu)
-    await fetchDateRange()
+    if (menu === SIDE_MENU_TYPE.SCHEDULE) {
+      await fetchDateRange()
+    }
+    // if (menu === SIDE_MENU_TYPE.LOGOUT) {
+    //   await logout()
+    // }
     setOpen(false)
   }
 

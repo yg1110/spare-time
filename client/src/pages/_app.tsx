@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { RecoilRoot } from 'recoil'
 import { AppProps } from 'next/app'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import '@/styles/globals.scss'
+import { useRouter } from 'next/router'
+import { check } from '@/services/auth.service'
+import Login from '@/pages/login'
 
 const client = new ApolloClient({
   uri: 'https://sparetime.life:4000/graphql',
@@ -10,41 +13,19 @@ const client = new ApolloClient({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [isLogin, setIsLogin] = React.useState(false)
-  const [userData, setUserData] = React.useState({})
-  const [userInfos, setUserInfos] = React.useState({
-    id: '',
-    password: '',
-  })
+  const [isLogin, setIsLogin] = useState(false)
+  const router = useRouter()
 
-  function loginHandler() {
-    setIsLogin(true)
-  }
-
-  function setUserInfo(userData: any) {
-    setUserData({ userData })
-  }
-
-  function logoutHandler() {
-    setIsLogin(false)
-  }
-
-  function onChangeInfo(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target
-    setUserInfos({
-      ...userInfos,
-      [name]: value,
+  useEffect(() => {
+    check().then((r: unknown) => {
+      const { data } = r as { data: boolean }
+      setIsLogin(data)
     })
-  }
-
-  function onLogin() {
-    console.log(`userInfos`, userInfos)
-  }
-
+  }, [])
   return (
     <ApolloProvider client={client}>
       <RecoilRoot>
-        <Component {...pageProps} />
+        {isLogin ? <Component {...pageProps} /> : <Login />}
       </RecoilRoot>
     </ApolloProvider>
   )

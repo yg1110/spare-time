@@ -52,17 +52,23 @@ class App {
   private config(): void {
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: false }))
-    this.app.use(cors())
+    this.app.use(
+      cors({
+        credentials: true,
+        origin: 'http://localhost:3000',
+      })
+    )
   }
 
   private storageInit(): void {
     this.app.use(cookieParser())
     this.app.use(
       session({
-        secret: 'session-cookie', // 암호화하는 데 쓰일 키
-        resave: false, // 세션을 언제나 저장할지 설정함
-        saveUninitialized: true, // 세션에 저장할 내역이 없더라도 처음부터 세션을 생성할지 설정
-        store: new FileStore(), // 데이터를 저장하는 형식
+        secret: '.', // 암호화하는 데 쓰일 키
+        resave: false, // 요청이 왔을 때 세션에 수정사항이 생기지 않더라도 저장할 것인지 설정
+        saveUninitialized: false, // 세션에 저장할 내역이 없더라도 처음부터 세션을 생성할지 설정
+        cookie: { maxAge: 86400 },
+        // store: new FileStore(), // 데이터를 저장하는 형식 (디폴트 메모리)
       })
     )
   }

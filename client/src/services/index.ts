@@ -8,10 +8,6 @@ class AxiosService {
     const baseURL = NEXT_APP_API_SERVER_URL || 'http://localhost:8000/api/v1'
     this.api = axios.create({
       baseURL: baseURL,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
     })
   }
 

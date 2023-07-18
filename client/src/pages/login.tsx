@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Auth } from '@/types/Auth'
 import { useRouter } from 'next/router'
 import { login } from '@/services/auth.service'
+import { Toast } from '@/component/Common/Toast'
 
 const Container = styled.div`
   height: 100%;
@@ -82,8 +83,25 @@ const Divider = styled.div`
   }
 `
 
+interface Toast {
+  open: boolean
+  message: string
+  type: 'success' | 'info' | 'warning' | 'error'
+}
+
+interface CustomError extends Error {
+  data: any
+  status: number
+  headers: string
+}
+
 const Login: React.FC = () => {
   const router = useRouter()
+  const [toast, setToast] = React.useState<Toast>({
+    open: false,
+    type: 'success',
+    message: '',
+  })
   const [userInfo, setUserInfo] = React.useState<Auth>({
     id: '',
     password: '',
@@ -98,39 +116,65 @@ const Login: React.FC = () => {
   }
 
   async function onSubmit() {
-    const user = await login(userInfo)
-    console.log(`user`, user)
-    // await router.push('/calendar')
+    try {
+      await login(userInfo)
+      await router.push('/calendar')
+    } catch (err: unknown) {
+      const customErr = err as CustomError
+      setToast({
+        ...toast,
+        open: true,
+        type: 'error',
+        message: customErr.data.data,
+      })
+    }
+  }
+
+  const onChangeState = (open: boolean) => {
+    setToast({
+      ...toast,
+      open,
+    })
   }
 
   return (
-    <Container>
-      <RowContainer>
-        <Label>ID</Label>
-        <Input
-          name="id"
-          placeholder="ID"
-          value={userInfo.id}
-          onChange={onChangeValue}
-        />
-        <Label>Password</Label>
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={userInfo.password}
-          onChange={onChangeValue}
-        />
-        <SubmitButton onClick={onSubmit}>
-          <SubmitButtonText>로그인</SubmitButtonText>
-        </SubmitButton>
-        <RightTextContainer>
-          <TextLink href="/signup">회원가입</TextLink>
-          <Divider></Divider>
-          <TextLink href="/find-password">비밀번호 찾기</TextLink>
-        </RightTextContainer>
-      </RowContainer>
-    </Container>
+    <React.Fragment>
+      <Container>
+        <RowContainer>
+          <Label>ID</Label>
+          <Input
+            name="id"
+            placeholder="ID"
+            value={userInfo.id}
+            onChange={onChangeValue}
+          />
+          <Label>Password</Label>
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={userInfo.password}
+            onChange={onChangeValue}
+          />
+          <SubmitButton onClick={onSubmit}>
+            <SubmitButtonText>로그인</SubmitButtonText>
+          </SubmitButton>
+          <RightTextContainer>
+            <TextLink href="/signup">회원가입</TextLink>
+            <Divider></Divider>
+            <TextLink href="/find-password">비밀번호 찾기</TextLink>
+          </RightTextContainer>
+        </RowContainer>
+      </Container>
+      <Toast
+        open={toast.open}
+        type={toast.type}
+        message={toast.message}
+        onChangeState={onChangeState}
+        vertical="top"
+        horizontal="left"
+      />
+    </React.Fragment>
   )
 }
 

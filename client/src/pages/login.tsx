@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Auth } from '@/types/Auth'
-import { useRouter } from 'next/router'
-import { login } from '@/services/auth.service'
 import { Toast } from '@/component/Common/Toast'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { URL_PATH } from '@/utils/constant'
 
 const Container = styled.div`
   height: 100%;
@@ -96,12 +97,15 @@ interface CustomError extends Error {
 }
 
 const Login: React.FC = () => {
+  const { data: session, status } = useSession()
   const router = useRouter()
+
   const [toast, setToast] = React.useState<Toast>({
     open: false,
     type: 'success',
     message: '',
   })
+
   const [userInfo, setUserInfo] = React.useState<Auth>({
     id: '',
     password: '',
@@ -117,8 +121,12 @@ const Login: React.FC = () => {
 
   async function onSubmit() {
     try {
-      await login(userInfo)
-      await router.push('/calendar')
+      await signIn('credential', {
+        id: userInfo.id,
+        password: userInfo.password,
+        redirect: false,
+        callbackUrl: URL_PATH.CALENDAR_PATH,
+      })
     } catch (err: unknown) {
       const customErr = err as CustomError
       setToast({
@@ -137,7 +145,13 @@ const Login: React.FC = () => {
     })
   }
 
-  return (
+  useEffect(() => {
+    if (session?.user) router.push(URL_PATH.CALENDAR_PATH)
+  }, [session])
+
+  return status === 'loading' ? (
+    <div>loading</div>
+  ) : (
     <React.Fragment>
       <Container>
         <RowContainer>

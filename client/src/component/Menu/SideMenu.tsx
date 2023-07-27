@@ -11,13 +11,14 @@ import ListItemText from '@mui/material/ListItemText'
 import Drawer from '@mui/material/Drawer'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import LogoutIcon from '@mui/icons-material/Logout'
+import FullCalendar from '@fullcalendar/react'
 import { styled, useTheme } from '@mui/material/styles'
 import { SIDE_MENU_TYPE } from '@/utils/constant'
 import { SvgIconProps } from '@mui/material'
 import { useRecoilState } from 'recoil'
 import { sideMenuState } from '@/state/menu.state'
-import FullCalendar from '@fullcalendar/react'
 import { useDateAPI } from '@/hooks/useDateAPI'
+import { signOut } from 'next-auth/react'
 
 type MENU_TYPE = {
   menu: string
@@ -63,9 +64,9 @@ const SideMenu: React.FC<Props> = ({ open, setOpen, calendarRef }) => {
     if (menu === SIDE_MENU_TYPE.SCHEDULE) {
       await fetchDateRange()
     }
-    // if (menu === SIDE_MENU_TYPE.LOGOUT) {
-    //   await logout()
-    // }
+    if (menu === SIDE_MENU_TYPE.LOGOUT) {
+      await signOut()
+    }
     setOpen(false)
   }
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Auth } from '@/types/Auth'
 import { useRouter } from 'next/router'
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
-import { PASSWORD_QUESTION } from '@/utils/constant'
+import { PASSWORD_QUESTION, URL_PATH } from '@/utils/constant'
 import { signup } from '@/services/auth.service'
 
 const Container = styled.div`
@@ -127,8 +127,7 @@ const Signup: React.FC = () => {
     if (userInfo) {
       await signup(userInfo)
     }
-    console.log(`userInfo`, userInfo)
-    // await router.push('/calendar')
+    await router.push(URL_PATH.CALENDAR_PATH)
   }
 
   function onChangeSelect(event: SelectChangeEvent) {

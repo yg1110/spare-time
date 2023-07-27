@@ -1,19 +1,20 @@
-import { useEffect } from 'react'
-import { check } from '@/services/auth.service'
-import { useRouter } from 'next/router'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 export default function Home() {
-  const router = useRouter()
+  const { data: session } = useSession()
 
-  useEffect(() => {
-    check().then(async (r: unknown) => {
-      const { data } = r as { data: boolean }
-      if (data) {
-        await router.push('/calendar')
-      } else {
-        await router.push('/login')
-      }
-    })
-  }, [])
-  return <></>
+  if (session) {
+    return (
+      <>
+        Signed in as {session?.user?.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    )
+  }
+  return (
+    <>
+      Not signed in <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </>
+  )
 }

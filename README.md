@@ -139,7 +139,7 @@ const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
 
 ### 5. apollo client가 CA 인증되지 않은 ssl을 사용한 https를 사용할 경우 연결되지 않는 오류
 
-- CA 인즌된 https API 서버 사용
+- CA 인증된 https API 서버 사용
 
 > API 주소 도메인 구입 (https://15.165.162.58:4000/graphql -> https://sparetime.life:4000/graphql)
 

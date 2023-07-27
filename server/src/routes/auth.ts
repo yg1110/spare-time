@@ -1,46 +1,15 @@
 import { Request, Response } from 'express'
 import User, { IUsers } from '../db/models/user'
 
-declare module 'express-session' {
-  interface SessionData {
-    authenticated: boolean
-  }
-}
-
-export const check = async (req: Request, res: Response) => {
-  return res.status(200).send({ data: req.session?.authenticated ?? false })
-}
-
 export const login = async (req: Request, res: Response) => {
   const { id, password } = req.body
-  if (req.session.authenticated) {
-    res.status(200).send({ data: req.session.authenticated })
+  const userInfo = await User.findOne<IUsers>({
+    id,
+    password,
+  })
+  if (userInfo) {
+    res.status(200).send({ data: userInfo })
   } else {
-    const userInfo = await User.findOne<IUsers>({
-      id,
-      password,
-    })
-    if (userInfo) {
-      req.session.authenticated = true
-      res.status(200).send({ data: req.session.authenticated })
-    } else {
-      res.status(400).send({ data: '로그인 정보가 올바르지 않습니다.' })
-    }
-  }
-}
-
-export const logout = async (req: Request, res: Response) => {
-  if (req.session.authenticated) {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log('세션 삭제시에 에러가 발생했습니다.')
-        return
-      }
-      console.log('세션이 삭제됐습니다.')
-      res.status(200).send({ data: '세션이 삭제됐습니다.' })
-    })
-  } else {
-    console.log('로그인 정보가 올바르지 않습니다.')
     res.status(400).send({ data: '로그인 정보가 올바르지 않습니다.' })
   }
 }

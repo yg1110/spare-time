@@ -45,3 +45,10 @@ export const PASSWORD_QUESTION = [
   '다시 태어나면 되고 싶은 것은?',
   '내가 좋아하는 캐릭터는?',
 ]
+
+export const URL_PATH = {
+  LOGIN_PATH: '/login',
+  SIGNUP_PATH: '/signup',
+  CALENDAR_PATH: '/calendar',
+  FIND_PASSWORD_PATH: '/find-password',
+}

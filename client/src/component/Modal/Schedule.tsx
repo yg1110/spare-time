@@ -134,6 +134,14 @@ const Schedule: React.FC<Props> = ({
     const date = dayjs(currentDate).format('YYYY-MM-DD')
     const start = dayjs(schedule.start).format('HH:mm:ss')
     const end = dayjs(schedule.end).format('HH:mm:ss')
+    if (start > end) {
+      alert('시간을 재대로 선택해주세요.')
+      return
+    }
+    if (!schedule.title) {
+      alert('제목을 입력해주세요.')
+      return
+    }
     const event = {
       date: dayjs(currentDate).format('YYYY-MM-DD'),
       userId: session?.user?.email ?? '',

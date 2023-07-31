@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { KeyboardEvent, useEffect } from 'react'
 import styled from 'styled-components'
 import { Auth } from '@/types/Auth'
 import { Toast } from '@/component/Common/Toast'
@@ -145,6 +145,12 @@ const Login: React.FC = () => {
     })
   }
 
+  const onKeySubmit = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === 'Enter') {
+      await onSubmit()
+    }
+  }
+
   useEffect(() => {
     if (session?.user) router.push(URL_PATH.CALENDAR_PATH)
   }, [session])
@@ -161,6 +167,7 @@ const Login: React.FC = () => {
             placeholder="ID"
             value={userInfo.id}
             onChange={onChangeValue}
+            onKeyUp={onKeySubmit}
           />
           <Label>Password</Label>
           <Input
@@ -169,6 +176,7 @@ const Login: React.FC = () => {
             placeholder="Password"
             value={userInfo.password}
             onChange={onChangeValue}
+            onKeyUp={onKeySubmit}
           />
           <SubmitButton onClick={onSubmit}>
             <SubmitButtonText>로그인</SubmitButtonText>

@@ -22,7 +22,7 @@ import {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  padding: 50px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
   display: flex;
   flex-direction: column;
 `

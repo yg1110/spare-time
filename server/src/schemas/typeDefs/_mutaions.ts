@@ -2,7 +2,12 @@ import { gql } from 'apollo-server-express'
 
 const mutations = gql`
   type Mutation {
-    insertDiary(date: String, title: String, content: String): [Diary]
+    insertDiary(
+      userId: String
+      date: String
+      title: String
+      content: String
+    ): [Diary]
     editDiary(
       date: String
       diaryId: String
@@ -11,6 +16,7 @@ const mutations = gql`
     ): [Diary]
     deleteDiaries(diaryId: String): [Diary]
     insertSchedule(
+      userId: String
       date: String
       title: String
       start: String

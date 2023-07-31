@@ -18,11 +18,12 @@ import { calendarModalState } from '@/state/modal.state'
 import dayjs from 'dayjs'
 
 interface Props {
+  isGuest: boolean
   calendarRef: React.RefObject<FullCalendar>
   changeView: (view: string) => void
 }
 
-const Nav: React.FC<Props> = ({ calendarRef, changeView }) => {
+const Nav: React.FC<Props> = ({ isGuest, calendarRef, changeView }) => {
   const [selectedMenu, setSelectedMenu] =
     useRecoilState<string>(selectedMenuState)
   const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
@@ -67,11 +68,13 @@ const Nav: React.FC<Props> = ({ calendarRef, changeView }) => {
           value={CALENDAR_VIEW_MODE.DAY}
           icon={<WebAssetIcon />}
         />
-        <BottomNavigationAction
-          label={MENUS.ADD}
-          value={CALENDAR_VIEW_MODE.ADD}
-          icon={<AddIcon />}
-        ></BottomNavigationAction>
+        {!isGuest ? (
+          <BottomNavigationAction
+            label={MENUS.ADD}
+            value={CALENDAR_VIEW_MODE.ADD}
+            icon={<AddIcon />}
+          ></BottomNavigationAction>
+        ) : null}
       </BottomNavigation>
     </Box>
   )

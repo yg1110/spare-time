@@ -1,8 +1,9 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { URL_PATH } from '@/utils/constant'
-import { Auth } from '@/types/Auth'
 import { login } from '@/services/auth.service'
+import { Auth } from '@/types/Auth'
+import { AdapterUser } from 'next-auth/adapters'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -19,7 +20,12 @@ export const authOptions: NextAuthOptions = {
           password: credentials.password,
         }
         const user = await login<Auth>(auth)
-        if (user) return user
+        if (user) {
+          return {
+            email: user?._id,
+            name: user?.name,
+          } as AdapterUser
+        }
         return null
       },
     }),
@@ -28,9 +34,7 @@ export const authOptions: NextAuthOptions = {
     // maxAge: 30 * 24 * 60 * 60,
     maxAge: 24 * 60 * 60,
   },
-  callbacks: {
-    // Set up callbacks if required
-  },
+  callbacks: {},
   pages: {
     signIn: URL_PATH.LOGIN_PATH,
   },

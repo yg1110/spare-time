@@ -30,25 +30,28 @@ const Container = styled.div`
 `
 
 interface Props {
+  isGuest: boolean
   calendarRef: React.RefObject<FullCalendar>
 }
 
-const CalendarView: React.FC<Props> = ({ calendarRef }) => {
+const CalendarView: React.FC<Props> = ({ isGuest, calendarRef }) => {
   const { fetchScheduleById } = useScheduleAPI(calendarRef)
   const { fetchDiaryById } = useDiaryAPI(calendarRef)
+  const [title, setTitle] = useRecoilState<string>(calendarTitleState)
   const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)
   const calendarEvent = useRecoilValue<EventInput[]>(calendarEventState)
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
-  const [title, setTitle] = useRecoilState<string>(calendarTitleState)
   const selectedMenu = useRecoilValue<string>(selectedMenuState)
   const setSideMenu = useSetRecoilState(sideMenuState)
 
   const onDateSelect = (arg: DateClickArg) => {
+    if (isGuest) return
     setShowModal(true)
     setSelectedDate(arg.date)
   }
 
   const onEventClick = async (clickInfo: EventClickArg) => {
+    if (isGuest) return
     setSelectedDate(dayjs(clickInfo.event.start).toDate())
     if (clickInfo.event.extendedProps.type === SIDE_MENU_TYPE.SCHEDULE) {
       const scheduleId = clickInfo.event.extendedProps._id

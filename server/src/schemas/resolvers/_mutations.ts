@@ -29,15 +29,16 @@ async function addDiaries(
 
 async function createDiaries(
   date: string,
-  body: { title: string; content: string }
+  body: { userId: string; title: string; content: string }
 ) {
-  const { title, content } = body
+  const { userId, title, content } = body
   const diaries: IDiary = new Diary({
     title,
     content,
   })
   const dates: IDate = new CalendarDate({
     date: date,
+    userId: userId,
     diaries: diaries,
   })
   try {
@@ -73,9 +74,9 @@ async function addSchedule(
 
 async function createSchedule(
   date: string,
-  body: { title: string; start: string; end: string }
+  body: { userId: string; title: string; start: string; end: string }
 ) {
-  const { title, start, end } = body
+  const { userId, title, start, end } = body
   const schedule: ISchedule = new Schedule({
     title,
     start,
@@ -83,6 +84,7 @@ async function createSchedule(
   })
   const dates: IDate = new CalendarDate({
     date: date,
+    userId: userId,
     schedules: schedule,
   })
   try {
@@ -98,12 +100,14 @@ export const insertDiary = async (
   _: string,
   args: {
     date: string
+    userId: string
     title: string
     content: string
   }
 ) => {
   const date = dayjs(args.date).format('YYYY-MM-DD')
-  const model = await CalendarDate.findOne({ date }).exec()
+  const userId = args.userId
+  const model = await CalendarDate.findOne({ userId, date }).exec()
   return model ? addDiaries(model, args) : createDiaries(date, args)
 }
 
@@ -111,13 +115,15 @@ export const insertSchedule = async (
   _: string,
   args: {
     date: string
+    userId: string
     title: string
     start: string
     end: string
   }
 ) => {
   const date = dayjs(args.date).format('YYYY-MM-DD')
-  const model = await CalendarDate.findOne({ date }).exec()
+  const userId = args.userId
+  const model = await CalendarDate.findOne({ userId, date }).exec()
   return model ? addSchedule(model, args) : createSchedule(date, args)
 }
 

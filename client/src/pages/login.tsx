@@ -178,6 +178,9 @@ const Login: React.FC = () => {
             <Divider></Divider>
             <TextLink href="/find-password">비밀번호 찾기</TextLink>
           </RightTextContainer>
+          <RightTextContainer>
+            <TextLink href="/guest-calendar">둘러보기</TextLink>
+          </RightTextContainer>
         </RowContainer>
       </Container>
       <Toast

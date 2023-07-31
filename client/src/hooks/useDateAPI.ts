@@ -1,15 +1,17 @@
 import React from 'react'
 import FullCalendar from '@fullcalendar/react'
-import { DATES } from '@/types/Calendar'
 import { useSetRecoilState } from 'recoil'
 import { EventInput } from '@fullcalendar/core'
 import { calendarEventState } from '@/state/calendar.state'
 import { useLazyQuery } from '@apollo/client'
 import { GET_DATE_RANGE } from '@/graphql/_queries'
 import dayjs from 'dayjs'
+import { useSession } from 'next-auth/react'
 import { SIDE_MENU_TYPE } from '@/utils/constant'
+import { DATES } from '@/types/Calendar'
 
 export function useDateAPI(calendarRef: React.RefObject<FullCalendar>) {
+  const { data: session } = useSession()
   const setCalendarEvent = useSetRecoilState<EventInput[]>(calendarEventState)
   const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
     fetchPolicy: 'network-only',
@@ -23,10 +25,12 @@ export function useDateAPI(calendarRef: React.RefObject<FullCalendar>) {
       const endDate = dayjs(currentEnd).format('YYYY-MM-DD')
       const { data } = await getDateRange({
         variables: {
+          userId: session?.user?.email ?? '64c76cf84973e96a88981753',
           start: startDate,
           end: endDate,
         },
       })
+      if (!data) return
       const { findCalendarByRange } = data
       const calendarEvents = findCalendarByRange.reduce(
         (events: EventInput[], date: DATES) => {

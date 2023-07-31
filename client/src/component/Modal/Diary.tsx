@@ -7,6 +7,7 @@ import { diaryState, selectedDateState } from '@/state/calendar.state'
 import { MODAL_MODE } from '@/utils/constant'
 import { isValidValue } from '@/utils/helper'
 import { useDiaryAPI } from '@/hooks/useDiaryAPI'
+import { useSession } from 'next-auth/react'
 import FullCalendar from '@fullcalendar/react'
 import dayjs from 'dayjs'
 
@@ -89,6 +90,7 @@ interface Props {
 }
 
 const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
+  const { data: session } = useSession()
   const { createDiary, updateDiary, deleteDiary } = useDiaryAPI(calendarRef)
   const [diary, setDiary] = useRecoilState<DIARY>(diaryState)
   const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)
@@ -142,6 +144,7 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
     }
     const body = {
       ...diary,
+      userId: session?.user?.email ?? '',
       date: dayjs(currentDate).format('YYYY-MM-DD'),
     }
     setSelectedDate(currentDate)

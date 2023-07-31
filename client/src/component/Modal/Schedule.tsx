@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import { SCHEDULE } from '@/types/Calendar'
 import { scheduleState, selectedDateState } from '@/state/calendar.state'
 import { useScheduleAPI } from '@/hooks/useScheduleAPI'
+import { useSession } from 'next-auth/react'
 
 const TimeWrapper = styled.div`
   display: flex;
@@ -64,6 +65,7 @@ const Schedule: React.FC<Props> = ({
   setShowModal,
   currentDate,
 }) => {
+  const { data: session } = useSession()
   const { createSchedule, updateSchedule, deleteSchedule } =
     useScheduleAPI(calendarRef)
   const [schedule, setSchedule] = useRecoilState<SCHEDULE>(scheduleState)
@@ -134,6 +136,7 @@ const Schedule: React.FC<Props> = ({
     const end = dayjs(schedule.end).format('HH:mm:ss')
     const event = {
       date: dayjs(currentDate).format('YYYY-MM-DD'),
+      userId: session?.user?.email ?? '',
       title: schedule.title,
       start: dayjs(`${date} ${start}`).format('YYYY-MM-DD HH:mm:ss'),
       end: dayjs(`${date} ${end}`).format('YYYY-MM-DD HH:mm:ss'),

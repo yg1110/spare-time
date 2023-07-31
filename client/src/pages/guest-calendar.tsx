@@ -1,10 +1,8 @@
 import React from 'react'
 import CalendarView from '@/component/CalendarView'
-import CalendarModal from '@/component/Modal/CalendarModal'
 import Nav from '@/component/Nav'
 import CssBaseline from '@mui/material/CssBaseline'
 import AppHeader from '@/component/Menu/AppHeader'
-import SideMenu from '@/component/Menu/SideMenu'
 import Box from '@mui/material/Box'
 import FullCalendar from '@fullcalendar/react'
 import { styled } from '@mui/material/styles'
@@ -40,20 +38,17 @@ const Calendar: React.FC = () => {
       {/** 상단 헤더 **/}
       <AppHeader
         open={open}
-        isGuest={false}
+        isGuest={true}
         setOpen={setOpen}
         calendarRef={calendarRef}
       />
-      {/** 사이드 메뉴 **/}
-      <SideMenu open={open} setOpen={setOpen} calendarRef={calendarRef} />
       {/** 메인 컴포넌트 **/}
       <Main open={open}>
         <DrawerHeader />
         <div className="calendar-container">
-          <CalendarView isGuest={false} calendarRef={calendarRef} />
-          <CalendarModal calendarRef={calendarRef} />
+          <CalendarView isGuest={true} calendarRef={calendarRef} />
           <Nav
-            isGuest={false}
+            isGuest={true}
             calendarRef={calendarRef}
             changeView={changeView}
           />

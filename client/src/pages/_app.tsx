@@ -3,8 +3,8 @@ import { RecoilRoot } from 'recoil'
 import { AppProps } from 'next/app'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { SessionProvider } from 'next-auth/react'
-import '@/styles/globals.scss'
 import { Session } from 'next-auth'
+import '@/styles/globals.scss'
 
 const client = new ApolloClient({
   uri: 'https://sparetime.life:4000/graphql',

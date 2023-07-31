@@ -23,6 +23,7 @@ export function useDiaryAPI(calendarRef: React.RefObject<FullCalendar>) {
         diaryId: diaryId,
       },
     })
+    if (!data) return
     const { findCalendarById } = data
     setDiary(findCalendarById.diaries)
   }

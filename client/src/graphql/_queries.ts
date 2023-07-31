@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client'
 
 export const GET_DATE_RANGE = gql`
-  query FindCalendarByRange($start: String, $end: String) {
-    findCalendarByRange(start: $start, end: $end) {
+  query FindCalendarByRange($userId: String, $start: String, $end: String) {
+    findCalendarByRange(userId: $userId, start: $start, end: $end) {
       date
+      userId
       schedules {
         _id
         start

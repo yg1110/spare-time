@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { ReactNode, useRef } from 'react'
 import styled from 'styled-components'
 import Image from 'next/image'
 import closeButton from '@/images/close.png'
@@ -35,7 +35,7 @@ const Container = styled.div<{
 
 interface ModalProps {
   visible: boolean
-  children: any
+  children: ReactNode
   width: string | number
   height: string | number
   close: (e: React.MouseEvent<HTMLElement>) => void

@@ -5,6 +5,7 @@ import { ISchedule } from './schedule'
 
 export interface IDate extends Document {
   date: string
+  userId: string
   todos?: ITodo[]
   diaries?: IDiary[]
   schedules?: ISchedule[]
@@ -12,6 +13,7 @@ export interface IDate extends Document {
 
 const dateSchema: Schema = new mongoose.Schema({
   date: { type: String, required: true, default: new Date() },
+  userId: { type: mongoose.Types.ObjectId, required: true, ref: 'Users' },
   todos: { type: Array, default: [] },
   diaries: { type: Array, default: [] },
   schedules: { type: Array, default: [] },

@@ -3,11 +3,18 @@ import { gql } from '@apollo/client'
 export const INSERT_SCHEDULE = gql`
   mutation InsertSchedule(
     $date: String
+    $userId: String
     $title: String
     $start: String
     $end: String
   ) {
-    insertSchedule(date: $date, title: $title, start: $start, end: $end) {
+    insertSchedule(
+      date: $date
+      userId: $userId
+      title: $title
+      start: $start
+      end: $end
+    ) {
       _id
       end
       start
@@ -49,8 +56,18 @@ export const DELETE_SCHEDULE = gql`
 `
 
 export const INSERT_DIARY = gql`
-  mutation InsertDiary($date: String, $title: String, $content: String) {
-    insertDiary(date: $date, title: $title, content: $content) {
+  mutation InsertDiary(
+    $date: String
+    $userId: String
+    $title: String
+    $content: String
+  ) {
+    insertDiary(
+      date: $date
+      userId: $userId
+      title: $title
+      content: $content
+    ) {
       _id
       content
       title

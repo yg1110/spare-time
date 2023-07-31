@@ -76,13 +76,17 @@ export const findCalendarByDate = async (
 export const findCalendarByRange = async (
   _: string,
   args: {
+    userId: string
     start: string
     end: string
   }
 ) => {
-  const { start, end } = args
+  const { userId, start, end } = args
   try {
+    const id = new mongoose.Types.ObjectId(userId as string)
+
     const models = await CalendarDate.find({
+      userId: id,
       date: { $gte: start, $lte: end },
     })
     return models

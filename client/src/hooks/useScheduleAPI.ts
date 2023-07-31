@@ -27,6 +27,7 @@ export function useScheduleAPI(calendarRef: React.RefObject<FullCalendar>) {
         scheduleId: scheduleId,
       },
     })
+    if (!data) return
     const { findCalendarById } = data
     setSchedule(findCalendarById.schedules)
   }

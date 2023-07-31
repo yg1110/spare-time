@@ -7,7 +7,12 @@
     "plugin:prettier/recommended",
     "prettier"
   ],
-  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "prettier"
+  ],
   "env": {
     "browser": true,
     "node": true,
@@ -32,7 +37,8 @@
         "allowExpressions": true
       }
     ],
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": 0
   },
   "settings": {
     "react": {

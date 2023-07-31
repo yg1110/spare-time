@@ -8,7 +8,7 @@ const queries = gql`
       isSchedules: Boolean
       isDiaries: Boolean
     ): Calendars
-    findCalendarByRange(start: String, end: String): [Calendars]
+    findCalendarByRange(userId: String, start: String, end: String): [Calendars]
   }
 `
 

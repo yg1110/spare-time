@@ -18,12 +18,18 @@ const AppBar = styled(MuiAppBar, {
 }))
 
 interface Props {
+  isGuest: boolean
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   calendarRef: React.RefObject<FullCalendar>
 }
 
-const AppHeader: React.FC<Props> = ({ calendarRef, open, setOpen }) => {
+const AppHeader: React.FC<Props> = ({
+  calendarRef,
+  isGuest,
+  open,
+  setOpen,
+}) => {
   const onDrawerOpen = () => {
     setOpen(true)
   }
@@ -31,15 +37,17 @@ const AppHeader: React.FC<Props> = ({ calendarRef, open, setOpen }) => {
   return (
     <AppBar position="fixed" open={open}>
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={onDrawerOpen}
-          edge="start"
-          sx={{ mr: 2, ...(open && { display: 'none' }) }}
-        >
-          <MenuIcon />
-        </IconButton>
+        {!isGuest ? (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={onDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+        ) : null}
         <CalendarHeader calendarRef={calendarRef} />
       </Toolbar>
     </AppBar>

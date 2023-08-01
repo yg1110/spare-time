@@ -17,13 +17,16 @@ SpareTime 프로젝트는 달력에 여러 정보들을 복합적으로 넣은 �
 
 홈페이지 주소 : https://spare-time.vercel.app/calendar
 
-API 서버 : https://sparetime.life:4000/graphql
+API : https://sparetime.life:4000/api/v1
+
+graphQL : https://sparetime.life:4000/graphql
 
 ## 🧑‍💻 Stack
 
 ### Front
 
 - next
+- next-auth
 - styled-components
 - material-ui
 - fullcalendar
@@ -52,6 +55,7 @@ API 서버 : https://sparetime.life:4000/graphql
 ```typescript jsx
 export interface IDate extends Document {
   date: string
+  userId: string
   diaries?: IDiary[]
   schedules?: ISchedule[]
 }
@@ -73,7 +77,7 @@ interface ISchedule {
 }
 ```
 
-유저가 선택한 날짜가 date로 가본키값으로 사용하며, 데이터가 수정될경우 diaries, schedules 배열에 추가 삭제하는식으로 구현되어있습니다.
+유저가 선택한 날짜가 date와 로그인한 유저의 objectId를 userId를 사용하며, 데이터가 수정될경우 diaries, schedules 배열에 추가 삭제하는식으로 구현되어있습니다.
 
 해당 스키마의 경우 필드 하나만 바꾸는데 데이터가 많을경우 엄청나게 많은 데이터를 불러들이는 문제가 발생할 수가 있습니다.
 
@@ -103,6 +107,22 @@ SpareTime의 경우 개인 프로젝트로 만든 서비스이기 때문에 트�
 
 하지만 vercel 하나로 API 서버와 디비 그리고 클라이언트 서버까지 한번에 돌리기에는 무리가 있고 사용량에 따라서 제한이 있기 때문에 추가적으로 AWS EC2의 인스턴스를 생성하여
 DB와 API 서버로 사용하였습니다.
+
+### 로그인 프로세스
+
+로그인의 경우 next-auth 라이브러리를 이용하여 next 서버에서 자체적으로 관리하게 되며, express 서버에서는 관리하고 있지 않습니다.
+
+추가적으로 소셜로그인은 구현하지 않았으며, credential만 사용하여 기본적인 로그인만 구현되어 있습니다.
+
+세션 기간은 1일로 설정 했으며, JWT은 사용하지 않습니다.
+
+JWT와 소셜로그인을 따로 구현하지 않은 이유는 현재 프로젝트에서는 간단한 로그인만 있어도 충분할 것 같다고 판단했기 때문입니다.
+
+next-auth/middleware 파일을 통해 설정한 페에지의 경우 로그인 세션여부에 따라 login 패이지로 리다이렉션 됩니다.
+
+API 요청은 세션 만료와는 상관없이 모두 리턴값이 오며, 클라이언트에서 미들웨어를 이용하여 페이지를 리다이렉션 시켜 세션값이 없을 경우에는 요청하지 않도록 예외처리 하였습니다.
+
+전체적인 프로세스의 경우 CredentialsProvider에서 authorize를 거치면서 현재 입력한 id와 password를 이용하여 디비에서 검색 후 해당 결과에 따라서 각각 처리하게 됩니다.
 
 ## ✅ 프로젝트를 진행하면서 기록으로 남기고 싶은 에러들
 
@@ -141,12 +161,12 @@ const [getDateRange] = useLazyQuery(GET_DATE_RANGE, {
 
 - CA 인증된 https API 서버 사용
 
-> API 주소 도메인 구입 (https://15.165.162.58:4000/graphql -> https://sparetime.life:4000/graphql)
+> API 주소 도메인 구입 (https://15.165.162.58:4000 -> https://sparetime.life:4000)
 
 > https://www.sslforfree.com/ 사이트에서 무료 ssl을 설정 후 CA가 인증된 https api 서버로 변경
 
 > aws 로드밸런서로 CA가 설정된 ssl key값 설정
 
-## 🌐 SEO
+### 6. 공인되지 CA에서 발급한 인증서로 https 요청시 "Unable to verify the first certificate" 에러
 
-추가 예정
+> 테스트용으로 임의로 발급한 것이기 때문에, process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0' 을 이용하여 인증서의 유효성을 검사하지 않는 것으로 설정

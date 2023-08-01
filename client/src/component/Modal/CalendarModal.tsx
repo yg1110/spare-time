@@ -39,10 +39,11 @@ const TimeLabel = styled.label`
 `
 
 interface Props {
+  isGuest: boolean
   calendarRef: React.RefObject<FullCalendar>
 }
 
-const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
+const CalendarModal: React.FC<Props> = ({ isGuest, calendarRef }) => {
   const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
   const [currentDate, setCurrentDate] = useState<Date>(
     selectedDate || new Date()
@@ -103,11 +104,13 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <RowContainer>
                 <TimeLabel>날짜</TimeLabel>
                 <MobileDatePicker
+                  disabled={isGuest}
                   format={'YY-MM-DD'}
                   onChange={onChangeDate}
                   value={dayjs(currentDate)}
                 />
                 <Schedule
+                  isGuest={isGuest}
                   calendarRef={calendarRef}
                   setShowModal={setShowModal}
                   currentDate={currentDate}
@@ -118,11 +121,13 @@ const CalendarModal: React.FC<Props> = ({ calendarRef }) => {
               <RowContainer>
                 <TimeLabel>날짜</TimeLabel>
                 <MobileDatePicker
+                  disabled={isGuest}
                   format={'YY-MM-DD'}
                   onChange={onChangeDate}
                   value={dayjs(currentDate)}
                 />
                 <Diary
+                  isGuest={isGuest}
                   calendarRef={calendarRef}
                   setShowModal={setShowModal}
                   currentDate={currentDate}

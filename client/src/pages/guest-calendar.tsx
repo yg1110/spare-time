@@ -6,6 +6,7 @@ import AppHeader from '@/component/Menu/AppHeader'
 import Box from '@mui/material/Box'
 import FullCalendar from '@fullcalendar/react'
 import { styled } from '@mui/material/styles'
+import CalendarModal from '@/component/Modal/CalendarModal'
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean
@@ -46,7 +47,8 @@ const Calendar: React.FC = () => {
       <Main open={open}>
         <DrawerHeader />
         <div className="calendar-container">
-          <CalendarView isGuest={true} calendarRef={calendarRef} />
+          <CalendarView calendarRef={calendarRef} />
+          <CalendarModal isGuest={true} calendarRef={calendarRef} />
           <Nav
             isGuest={true}
             calendarRef={calendarRef}

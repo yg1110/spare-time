@@ -50,8 +50,8 @@ const Calendar: React.FC = () => {
       <Main open={open}>
         <DrawerHeader />
         <div className="calendar-container">
-          <CalendarView isGuest={false} calendarRef={calendarRef} />
-          <CalendarModal calendarRef={calendarRef} />
+          <CalendarView calendarRef={calendarRef} />
+          <CalendarModal isGuest={false} calendarRef={calendarRef} />
           <Nav
             isGuest={false}
             calendarRef={calendarRef}

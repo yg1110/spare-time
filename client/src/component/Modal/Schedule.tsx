@@ -55,12 +55,14 @@ const Input = styled.input`
 `
 
 interface Props {
+  isGuest: boolean
   calendarRef: React.RefObject<FullCalendar>
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   currentDate: Date
 }
 
 const Schedule: React.FC<Props> = ({
+  isGuest,
   calendarRef,
   setShowModal,
   currentDate,
@@ -161,6 +163,7 @@ const Schedule: React.FC<Props> = ({
         <Input
           name="title"
           placeholder="일정 제목"
+          disabled={isGuest}
           value={schedule.title}
           onChange={onChangeValue}
         />
@@ -168,6 +171,7 @@ const Schedule: React.FC<Props> = ({
       <TimeWrapper>
         <TimeLabel>시작 시간</TimeLabel>
         <TimePicker
+          disabled={isGuest}
           defaultValue={dayjs().startOf('day')}
           value={dayjs(schedule.start)}
           onChange={(time) => onChangeTime('start', time)}
@@ -176,26 +180,29 @@ const Schedule: React.FC<Props> = ({
       <TimeWrapper>
         <TimeLabel>종료 시간</TimeLabel>
         <TimePicker
+          disabled={isGuest}
           defaultValue={dayjs().startOf('day')}
           value={dayjs(schedule.end)}
           onChange={(time) => onChangeTime('end', time)}
         />
       </TimeWrapper>
 
-      {mode === MODAL_MODE.MODIFY ? (
-        <>
-          <DeleteButton onClick={onDeleteSchedule}>
-            <SubmitButtonText>삭제</SubmitButtonText>
-          </DeleteButton>
-          <SubmitButton onClick={onUpdateSchedule}>
-            <SubmitButtonText>수정</SubmitButtonText>
+      {!isGuest ? (
+        mode === MODAL_MODE.MODIFY ? (
+          <>
+            <DeleteButton onClick={onDeleteSchedule}>
+              <SubmitButtonText>삭제</SubmitButtonText>
+            </DeleteButton>
+            <SubmitButton onClick={onUpdateSchedule}>
+              <SubmitButtonText>수정</SubmitButtonText>
+            </SubmitButton>
+          </>
+        ) : (
+          <SubmitButton onClick={onSubmit}>
+            <SubmitButtonText>생성</SubmitButtonText>
           </SubmitButton>
-        </>
-      ) : (
-        <SubmitButton onClick={onSubmit}>
-          <SubmitButtonText>생성</SubmitButtonText>
-        </SubmitButton>
-      )}
+        )
+      ) : null}
     </>
   )
 }

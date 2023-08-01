@@ -84,12 +84,18 @@ const SubmitButtonText = styled.p`
 `
 
 interface Props {
+  isGuest: boolean
   calendarRef: React.RefObject<FullCalendar>
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
   currentDate: Date
 }
 
-const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
+const Diary: React.FC<Props> = ({
+  isGuest,
+  calendarRef,
+  setShowModal,
+  currentDate,
+}) => {
   const { data: session } = useSession()
   const { createDiary, updateDiary, deleteDiary } = useDiaryAPI(calendarRef)
   const [diary, setDiary] = useRecoilState<DIARY>(diaryState)
@@ -163,6 +169,7 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
         <Input
           name="title"
           placeholder="일기 제목"
+          disabled={isGuest}
           value={diary.title}
           onChange={onChangeValue}
         />
@@ -173,24 +180,27 @@ const Diary: React.FC<Props> = ({ calendarRef, setShowModal, currentDate }) => {
           maxRows={8}
           name="content"
           placeholder="일기 내용"
+          disabled={isGuest}
           onChange={onChangeValue}
           value={diary.content}
         />
       </TimeWrapper>
-      {mode === MODAL_MODE.MODIFY ? (
-        <>
-          <DeleteButton onClick={onDeleteDiary}>
-            <SubmitButtonText>삭제</SubmitButtonText>
-          </DeleteButton>
-          <SubmitButton onClick={onUpdateDiary}>
-            <SubmitButtonText>수정</SubmitButtonText>
+      {!isGuest ? (
+        mode === MODAL_MODE.MODIFY ? (
+          <>
+            <DeleteButton onClick={onDeleteDiary}>
+              <SubmitButtonText>삭제</SubmitButtonText>
+            </DeleteButton>
+            <SubmitButton onClick={onUpdateDiary}>
+              <SubmitButtonText>수정</SubmitButtonText>
+            </SubmitButton>
+          </>
+        ) : (
+          <SubmitButton onClick={onSubmit}>
+            <SubmitButtonText>생성</SubmitButtonText>
           </SubmitButton>
-        </>
-      ) : (
-        <SubmitButton onClick={onSubmit}>
-          <SubmitButtonText>생성</SubmitButtonText>
-        </SubmitButton>
-      )}
+        )
+      ) : null}
     </>
   )
 }

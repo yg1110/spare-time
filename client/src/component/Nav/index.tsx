@@ -7,7 +7,7 @@ import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek'
 import WebAssetIcon from '@mui/icons-material/WebAsset'
 import AddIcon from '@mui/icons-material/Add'
 import { CALENDAR_VIEW_MODE, MENUS } from '@/utils/constant'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import {
   calendarTitleState,
   selectedDateState,
@@ -26,7 +26,6 @@ interface Props {
 const Nav: React.FC<Props> = ({ isGuest, calendarRef, changeView }) => {
   const [selectedMenu, setSelectedMenu] =
     useRecoilState<string>(selectedMenuState)
-  const selectedDate = useRecoilValue<Date | undefined>(selectedDateState)
   const setTitle = useSetRecoilState<string>(calendarTitleState)
   const setShowModal = useSetRecoilState<boolean>(calendarModalState)
   const setSelectedDate = useSetRecoilState<Date | undefined>(selectedDateState)

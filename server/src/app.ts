@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import express, { Application } from 'express'
 import { ApolloServer } from 'apollo-server-express'
-import { HOST, HTTPS_PORT, PORT } from './config'
+import { HOST, HTTPS_PORT } from './config'
 import https from 'https'
 import bodyParser from 'body-parser'
 import cors from 'cors'
@@ -17,6 +17,7 @@ class App {
   app: Application
 
   constructor() {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     this.server = new ApolloServer({ typeDefs, resolvers })
     this.app = express()
     this.config()
@@ -36,11 +37,8 @@ class App {
         console.log(
           `⚡️[graphql]: Server is running at ${HOST}:${HTTPS_PORT}${this.server.graphqlPath}`
         )
+        console.log(`⚡️[express]: Server is running at ${HOST}:${HTTPS_PORT}`)
       })
-    })
-    this.app.use(express.static('public'))
-    this.app.listen(PORT, () => {
-      console.log(`⚡️[express]: Server is running at ${HOST}:${PORT}`)
     })
   }
 
@@ -48,6 +46,7 @@ class App {
     this.app.use(cookieParser())
     this.app.use(bodyParser.json())
     this.app.use(bodyParser.urlencoded({ extended: false }))
+    this.app.use(express.static('public'))
     this.app.use(cors())
   }
 }

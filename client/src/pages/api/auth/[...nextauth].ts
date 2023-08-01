@@ -6,6 +6,7 @@ import { Auth } from '@/types/Auth'
 import { AdapterUser } from 'next-auth/adapters'
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       id: 'credential',

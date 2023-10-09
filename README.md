@@ -7,13 +7,6 @@ SpareTime 프로젝트는 달력에 여러 정보들을 복합적으로 넣은 �
 
 - 일정
 - 일기
-- <del>투두리스트</del>
-- <del>30일 챌린지</del>
-- <del>회고록</del>
-- <del>집중시간 / 낭비시간</del>
-- <del>차트</del>
-
-❗ <strong>현재는 일정과 일기만 구현되어있습니다.</strong>
 
 홈페이지 주소 : https://spare-time.vercel.app/calendar
 

@@ -57,8 +57,8 @@ const CalendarModal: React.FC<Props> = ({ isGuest, calendarRef }) => {
   const initSchedule = {
     title: '',
     allDay: true,
-    start: dayjs(selectedDate).add(1, 'hour'),
-    end: dayjs(selectedDate).add(2, 'hour'),
+    start: dayjs(selectedDate),
+    end: dayjs(selectedDate).add(1, 'hour'),
   }
 
   const initDiary = {
